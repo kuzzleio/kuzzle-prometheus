@@ -1,0 +1,72 @@
+{
+  "name": "kuzzle-prometheus",
+  "version": "0.0.0-development",
+  "description": "Prometheus metrics for Kuzzle backends and any Node.js service: one API, shared labels and conventions.",
+  "author": "The Kuzzle Team <support@kuzzle.io>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kuzzleio/kuzzle-prometheus",
+  "bugs": "https://github.com/kuzzleio/kuzzle-prometheus/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuzzleio/kuzzle-prometheus.git"
+  },
+  "keywords": [
+    "kuzzle",
+    "prometheus",
+    "metrics",
+    "monitoring"
+  ],
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./kuzzle": {
+      "types": "./dist/kuzzle/index.d.ts",
+      "default": "./dist/kuzzle/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "kuzzle": [
+        "dist/kuzzle/index.d.ts"
+      ]
+    }
+  },
+  "engines": {
+    "node": "^22.12.0 || ^24.0.0"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc --build tsconfig.build.json",
+    "prepack": "npm run build",
+    "test": "npm run test:lint && npm run test:types && npm run test:unit",
+    "test:lint": "eslint .",
+    "test:lint:fix": "eslint . --fix",
+    "test:types": "tsc --noEmit",
+    "test:unit": "vitest run --project unit"
+  },
+  "peerDependencies": {
+    "kuzzle": ">=2.59.0 <3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "kuzzle": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "eslint": "10.12.0",
+    "eslint-plugin-kuzzle": "2.0.0",
+    "typescript": "6.0.3",
+    "vitest": "4.1.11"
+  },
+  "files": [
+    "dist/",
+    "LICENSE",
+    "README.md"
+  ]
+}

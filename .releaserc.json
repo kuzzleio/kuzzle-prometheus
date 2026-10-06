@@ -1,0 +1,7 @@
+{
+  "extends": ["semantic-release-config-kuzzle"],
+  "branches": [
+    "master",
+    { "name": "+([0-9])-dev", "prerelease": "beta", "channel": "beta" }
+  ]
+}
