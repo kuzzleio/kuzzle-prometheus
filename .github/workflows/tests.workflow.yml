@@ -1,0 +1,39 @@
+name: Tests
+
+# Reusable: the same checks gate pull requests and every push to a dev or
+# release branch. Node 22 and 24 are the supported runtimes (ADR-0002 in
+# kuzzleio/kuzzle-plugin-prometheus); lint and types do not depend on the
+# runtime, so they run once, on 24.
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    name: Lint and types
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run test:lint
+      - run: npm run test:types
+
+  unit-tests:
+    name: Unit tests - Node ${{ matrix.node-version }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["22", "24"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:unit
