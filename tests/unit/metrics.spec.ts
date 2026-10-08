@@ -175,6 +175,30 @@ describe("gauge", () => {
       'Cannot collect gauge "ready": Error: broker unreachable',
     );
   });
+
+  it("gives up on a collect that never settles", async () => {
+    vi.useFakeTimers();
+    try {
+      const warn = vi.fn();
+      const metrics = quiet({ logger: { warn } });
+      const ready = metrics.gauge({
+        collect: () => new Promise<void>(() => {}),
+        help: "h",
+        name: "ready",
+      });
+      ready.set(1);
+
+      const rendering = body(metrics);
+      await vi.advanceTimersByTimeAsync(5000);
+
+      expect(await rendering).toMatch(/^ready 1$/m);
+      expect(warn).toHaveBeenCalledWith(
+        'Cannot collect gauge "ready": Error: no answer after 5000 ms',
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
 
 describe("histogram", () => {

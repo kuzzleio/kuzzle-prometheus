@@ -17,6 +17,9 @@ import type {
 
 const DEFAULT_MAX_LABEL_SETS = 1000;
 
+// Below Prometheus' default scrape_timeout (10 s)
+const COLLECT_TIMEOUT_MS = 5000;
+
 const DEFAULT_METRICS: Required<DefaultMetricsOptions> = {
   enabled: true,
   prefix: "",
@@ -286,17 +289,26 @@ export class Metrics {
   }
 
   /**
-   * A failing callback must not fail the whole scrape.
+   * A failing or hanging callback must not fail or block the whole scrape.
    */
   private async collectGauge<L extends string>(
     name: string,
     collect: (gauge: Gauge<L>) => void | Promise<void>,
     gauge: Gauge<L>,
   ): Promise<void> {
+    let timer: NodeJS.Timeout | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => {
+        reject(new Error(`no answer after ${COLLECT_TIMEOUT_MS} ms`));
+      }, COLLECT_TIMEOUT_MS);
+    });
+
     try {
-      await collect(gauge);
+      await Promise.race([(async () => collect(gauge))(), timeout]);
     } catch (error) {
       this.logger.warn(`Cannot collect gauge "${name}": ${String(error)}`);
+    } finally {
+      clearTimeout(timer);
     }
   }
 
