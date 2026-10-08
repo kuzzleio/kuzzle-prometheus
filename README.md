@@ -45,7 +45,7 @@ Deploying it in a full Kuzzle stack (permissions, Prometheus, Kubernetes, Grafan
 
 ## Requirements
 
-Node.js 22 or 24.
+Node.js 22.12+ or 24.
 
 ## Contributing
 

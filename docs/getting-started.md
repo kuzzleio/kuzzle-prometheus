@@ -8,7 +8,7 @@ Expose Prometheus metrics from a Node.js service. For a Kuzzle backend, use the 
 npm install kuzzle-prometheus
 ```
 
-Node.js 22 or 24.
+Node.js 22.12+ or 24.
 
 ## 2. Create one `Metrics` instance
 
