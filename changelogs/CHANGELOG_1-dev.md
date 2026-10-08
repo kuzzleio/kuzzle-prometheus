@@ -1,3 +1,9 @@
+## [1.0.0-beta.3](https://github.com/kuzzleio/kuzzle-prometheus/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2026-10-08)
+
+### Bug Fixes
+
+* a gauge collect that never settles no longer blocks the scrape ([dae7588](https://github.com/kuzzleio/kuzzle-prometheus/commit/dae7588a45196b33dec4b07dcdfb30e0a0677d9d))
+
 ## [1.0.0-beta.2](https://github.com/kuzzleio/kuzzle-prometheus/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2026-10-08)
 
 ### Features
