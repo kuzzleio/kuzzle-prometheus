@@ -1,6 +1,6 @@
 # Kuzzle plugin
 
-`kuzzle-prometheus/kuzzle` exposes the metrics of a Kuzzle backend: Kuzzle's own metrics, the duration of every API request, the Node.js process metrics, and the application's custom metrics. Kuzzle `>=2.59.0 <3`, Node.js 22 or 24.
+`kuzzle-prometheus/kuzzle` exposes the metrics of a Kuzzle backend: Kuzzle's own metrics, the duration of every API request, the Node.js process metrics, and the application's custom metrics. Kuzzle `>=2.59.0 <3`, Node.js 22.12+ or 24.
 
 ## Set up
 

@@ -27,7 +27,7 @@ npm run build         # dist/, CommonJS + .d.ts
 npm pack --dry-run    # check what ships
 ```
 
-Node.js 22 or 24 (`.nvmrc`).
+Node.js 22.12+ or 24 (`.nvmrc`).
 
 Functional tests run Kuzzle from `src/` (`tests/functional/app/`, through `tsx`) in the `kuzzle-runner` image, which runs `npm ci` **in the mounted repository**: afterwards `node_modules/` holds Linux binaries. On macOS, run the tests inside the container (`docker compose exec -T kuzzle npx vitest run --project functional`) and `npm ci` again once the stack is down.
 
