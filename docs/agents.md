@@ -4,7 +4,12 @@ You are adding or changing Prometheus metrics in an application that depends on 
 
 ## Find the existing instance first
 
-An application has **one** `Metrics` instance. Search for `createMetrics(` (Node.js services) or for the Kuzzle plugin's instance (`kuzzle-prometheus/kuzzle`) and reuse it. Never call `createMetrics` a second time: two instances mean two registries, and only one is scraped.
+An application has **one** `Metrics` instance. Reuse it:
+
+- Node.js service: search for `createMetrics(`.
+- Kuzzle backend: search for `new PrometheusPlugin(` (`kuzzle-prometheus/kuzzle`); the instance is `<plugin>.metrics`. Never call `createMetrics` in a Kuzzle backend: its metrics would not be exposed.
+
+Never create a second instance: two instances mean two registries, and only one is scraped.
 
 Do not import `@prometheus-io/client` or `prom-client` in the application. Everything goes through the `Metrics` API.
 
@@ -47,14 +52,18 @@ Never add `project`, `environment` or `service` to `labelNames`: they are common
 
 - `snake_case`, without the service name or the prefix (the instance adds the prefix).
 - Do not rename an existing metric: dashboards and alert rules depend on it. Add a new one instead, and say so in the change description.
+- Kuzzle backends: do not redeclare what the plugin already measures (API request duration and status, connections, realtime rooms; see [Kuzzle metrics reference](kuzzle-metrics.md)).
 
 ## Checking your change
 
 1. The application's tests pass: type errors on `inc` / `set` / `observe` usually mean a missing or unknown label.
-2. Start the service and run `curl -s localhost:<port>/metrics | grep <name>`: the metric appears once a value has been recorded.
+2. Start the service and check the metric appears once a value has been recorded:
+   - Node.js service: `curl -s localhost:<port>/metrics | grep <name>`;
+   - Kuzzle backend: `curl -s "localhost:7512/_metrics?format=prometheus" | grep <name>`.
 
 ## Reference
 
 - [Custom metrics](custom-metrics.md) — types, labels, naming rules, cardinality limit
 - [Configuration](configuration.md) — `createMetrics` options and environment variables
 - [Getting started](getting-started.md) — exposing `/metrics`
+- [Kuzzle plugin](kuzzle.md) — the plugin, its configuration and `plugin.metrics`
