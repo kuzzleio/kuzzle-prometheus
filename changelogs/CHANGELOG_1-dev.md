@@ -1,3 +1,9 @@
+## [1.0.0-beta.2](https://github.com/kuzzleio/kuzzle-prometheus/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2026-10-08)
+
+### Features
+
+* gauges set at scrape time with a collect callback ([b332e36](https://github.com/kuzzleio/kuzzle-prometheus/commit/b332e365e8329a597c2961da51fa0ea580379f83))
+
 ## 1.0.0-beta.1 (2026-10-08)
 
 ### Features
