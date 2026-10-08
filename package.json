@@ -47,7 +47,8 @@
     "test:lint": "eslint .",
     "test:lint:fix": "eslint . --fix",
     "test:types": "tsc --noEmit",
-    "test:unit": "vitest run --project unit"
+    "test:unit": "vitest run --project unit",
+    "test:functional": "vitest run --project functional"
   },
   "peerDependencies": {
     "kuzzle": ">=2.59.0 <3.0.0"
@@ -61,12 +62,18 @@
     "@types/node": "22.20.5",
     "eslint": "10.12.0",
     "eslint-plugin-kuzzle": "2.0.0",
+    "kuzzle": "2.59.0",
+    "tsx": "4.23.15",
     "typescript": "6.0.3",
     "vitest": "4.1.11"
   },
   "files": [
     "dist/",
     "LICENSE",
-    "README.md"
-  ]
+    "README.md",
+    "docs/"
+  ],
+  "dependencies": {
+    "@prometheus-io/client": "0.16.1"
+  }
 }

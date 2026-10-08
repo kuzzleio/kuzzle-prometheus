@@ -1,10 +1,20 @@
 /**
- * kuzzle-prometheus: framework-agnostic entry point (registry, default
- * metrics, `/metrics` handler, common labels). No dependency on Kuzzle.
- *
- * Skeleton: the module is extracted from kuzzle-plugin-prometheus in
- * ADR-0002 step 03.
+ * kuzzle-prometheus: framework-agnostic entry point. No dependency on Kuzzle.
+ * Guides: docs/getting-started.md, docs/custom-metrics.md.
  */
-export const COMMON_LABELS = ["project", "environment", "service"] as const;
-
-export type CommonLabel = (typeof COMMON_LABELS)[number];
+export { createMetrics, Metrics } from "./metrics";
+export { COMMON_LABELS } from "./types";
+export type {
+  CommonLabel,
+  Counter,
+  DefaultMetricsOptions,
+  Gauge,
+  Histogram,
+  HistogramConfiguration,
+  LabelValues,
+  MetricConfiguration,
+  MetricsHandler,
+  MetricsLogger,
+  MetricsOptions,
+  RenderedMetrics,
+} from "./types";
