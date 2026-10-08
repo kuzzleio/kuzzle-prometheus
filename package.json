@@ -1,6 +1,6 @@
 {
   "name": "kuzzle-prometheus",
-  "version": "0.0.0-development",
+  "version": "1.0.0-beta.1",
   "description": "Prometheus metrics for Kuzzle backends and any Node.js service: one API, shared labels and conventions.",
   "author": "The Kuzzle Team <support@kuzzle.io>",
   "license": "Apache-2.0",
