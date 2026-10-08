@@ -130,6 +130,8 @@ Every metric of the node carries:
 
 Keep `labels` values fixed for the life of the process, and do not use `nodeId`, `protocol`, `controller`, `action` or `status` as label names: the plugin uses them.
 
-## Metrics
+## Going further
 
-[Kuzzle metrics reference](kuzzle-metrics.md): every metric the plugin exposes, and PromQL examples.
+- [Kuzzle metrics reference](kuzzle-metrics.md): every metric the plugin exposes, and PromQL examples.
+- [Troubleshooting](troubleshooting.md).
+- [Integration guide](https://github.com/kuzzleio/kuzzle-plugin-prometheus/blob/5-dev/docs/kuzzle-stack.md) (`kuzzle-plugin-prometheus`): a dedicated scraper user, Prometheus jobs for clusters, Kubernetes, Grafana dashboards.

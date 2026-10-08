@@ -36,9 +36,12 @@ http.createServer(metrics.handler).listen(9464);
 | [Configuration](docs/configuration.md) | every option and environment variable |
 | [Kuzzle plugin](docs/kuzzle.md) | expose a Kuzzle backend's metrics, add the application's own |
 | [Kuzzle metrics reference](docs/kuzzle-metrics.md) | what each Kuzzle metric means, PromQL examples |
+| [Troubleshooting](docs/troubleshooting.md) | symptoms, causes and fixes |
 | [For AI agents](docs/agents.md) | rules an agent follows when it adds metrics to an application |
 
 The documentation ships in the npm package: `node_modules/kuzzle-prometheus/docs/`.
+
+Deploying it in a full Kuzzle stack (permissions, Prometheus, Kubernetes, Grafana dashboards) is covered by the [integration guide](https://github.com/kuzzleio/kuzzle-plugin-prometheus/blob/5-dev/docs/kuzzle-stack.md) of `kuzzle-plugin-prometheus`.
 
 ## Requirements
 
