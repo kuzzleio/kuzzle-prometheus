@@ -34,6 +34,8 @@ http.createServer(metrics.handler).listen(9464);
 | [Getting started](docs/getting-started.md) | expose metrics from a Node.js service in five minutes |
 | [Custom metrics](docs/custom-metrics.md) | declare counters, gauges and histograms, pick names and labels |
 | [Configuration](docs/configuration.md) | every option and environment variable |
+| [Kuzzle plugin](docs/kuzzle.md) | expose a Kuzzle backend's metrics, add the application's own |
+| [Kuzzle metrics reference](docs/kuzzle-metrics.md) | what each Kuzzle metric means, PromQL examples |
 | [For AI agents](docs/agents.md) | rules an agent follows when it adds metrics to an application |
 
 The documentation ships in the npm package: `node_modules/kuzzle-prometheus/docs/`.

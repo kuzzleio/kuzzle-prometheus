@@ -28,6 +28,12 @@ export const REJECTED_METRIC_NAME =
 
 type Labels = Record<string, string | number>;
 
+type KuzzleConfiguration = {
+  defaultMetrics: DefaultMetricsOptions;
+  labels: Record<string, string>;
+  logger: MetricsLogger;
+};
+
 /**
  * Keeps one metric under `maxLabelSets` label combinations.
  */
@@ -86,15 +92,15 @@ function splitArgs(
 export class Metrics {
   /**
    * Private so that no `@prometheus-io/client` type reaches the public API;
-   * the Kuzzle entry point reads it as `metrics["registry"]`.
+   * the Kuzzle entry point reaches it through registryOf().
    */
   private readonly registry = new client.Registry();
 
   readonly prefix: string;
   readonly maxLabelSets: number;
-  readonly commonLabels: Readonly<Record<string, string>>;
 
-  private readonly logger: MetricsLogger;
+  private labels: Record<string, string>;
+  private logger: MetricsLogger;
   private readonly rejected: client.Counter<"metric">;
 
   constructor(options: MetricsOptions = {}) {
@@ -110,8 +116,8 @@ export class Metrics {
 
     this.logger = options.logger ?? console;
 
-    this.commonLabels = resolveCommonLabels(options);
-    this.registry.setDefaultLabels(this.commonLabels);
+    this.labels = resolveCommonLabels(options);
+    this.registry.setDefaultLabels(this.labels);
 
     this.rejected = new client.Counter({
       name: REJECTED_METRIC_NAME,
@@ -120,15 +126,14 @@ export class Metrics {
       registers: [this.registry],
     });
 
-    const defaults = { ...DEFAULT_METRICS, ...options.defaultMetrics };
-    if (defaults.enabled) {
-      client.collectDefaultMetrics({
-        register: this.registry,
-        prefix: defaults.prefix,
-        eventLoopMonitoringPrecision: defaults.eventLoopMonitoringPrecision,
-        gcDurationBuckets: defaults.gcDurationBuckets,
-      });
-    }
+    this.collectDefaultMetrics(options.defaultMetrics);
+  }
+
+  /**
+   * Labels added to every metric of this instance.
+   */
+  get commonLabels(): Readonly<Record<string, string>> {
+    return this.labels;
   }
 
   counter<const L extends string = never>(
@@ -238,6 +243,38 @@ export class Metrics {
     );
   };
 
+  private collectDefaultMetrics(options?: DefaultMetricsOptions): void {
+    const defaults = { ...DEFAULT_METRICS, ...options };
+    if (defaults.enabled) {
+      client.collectDefaultMetrics({
+        eventLoopMonitoringPrecision: defaults.eventLoopMonitoringPrecision,
+        gcDurationBuckets: defaults.gcDurationBuckets,
+        prefix: defaults.prefix,
+        register: this.registry,
+      });
+    }
+  }
+
+  /**
+   * @internal see completeConfiguration()
+   */
+  static completeConfiguration(
+    metrics: Metrics,
+    { defaultMetrics, labels, logger }: KuzzleConfiguration,
+  ): void {
+    metrics.labels = { ...metrics.labels, ...labels };
+    metrics.registry.setDefaultLabels(metrics.labels);
+    metrics.logger = logger;
+    metrics.collectDefaultMetrics(defaultMetrics);
+  }
+
+  /**
+   * @internal see registryOf()
+   */
+  static registryOf(metrics: Metrics): client.Registry {
+    return metrics.registry;
+  }
+
   private rejectLabelSet(metric: string, firstTime: boolean): void {
     this.rejected.inc({ metric });
     if (firstTime) {
@@ -282,6 +319,28 @@ export class Metrics {
       hasLabels: labelNames.length > 0,
     };
   }
+}
+
+/**
+ * Kuzzle entry point only: a plugin knows its configuration at `init`, after
+ * the application declared its metrics on the instance. Not exported by the
+ * package.
+ * @internal
+ */
+export function completeConfiguration(
+  metrics: Metrics,
+  configuration: KuzzleConfiguration,
+): void {
+  Metrics.completeConfiguration(metrics, configuration);
+}
+
+/**
+ * Kuzzle entry point only: the registry, to declare the Kuzzle metrics, whose
+ * names and prefixes predate the module.
+ * @internal
+ */
+export function registryOf(metrics: Metrics): client.Registry {
+  return Metrics.registryOf(metrics);
 }
 
 function resolveCommonLabels(options: MetricsOptions): Record<string, string> {
