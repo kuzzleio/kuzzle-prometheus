@@ -52,7 +52,7 @@ metrics.gauge({
 });
 ```
 
-`collect` may be async; keep it fast, since every scrape waits for it. If it throws, the error goes to the logger and the gauge keeps its previous values: the rest of the scrape is not affected.
+`collect` may be async; keep it fast, since every scrape waits for it. If it throws, or does not settle within 5 seconds, the error goes to the logger and the gauge keeps its previous values: the rest of the scrape is not affected.
 
 ## Histogram
 
