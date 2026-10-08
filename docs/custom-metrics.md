@@ -40,6 +40,20 @@ queue.dec();
 
 A metric without `labelNames` takes no labels argument.
 
+### Set at scrape time
+
+When the value is a state you can read at any moment (a connection, a readiness flag, a pool size), give the gauge a `collect` callback instead of updating it on every change. It runs at every scrape, before rendering:
+
+```ts
+metrics.gauge({
+  name: "broker_connected",
+  help: "Whether the broker connection is up (1) or not (0)",
+  collect: (gauge) => gauge.set(broker.isConnected() ? 1 : 0),
+});
+```
+
+`collect` may be async; keep it fast, since every scrape waits for it. If it throws, the error goes to the logger and the gauge keeps its previous values: the rest of the scrape is not affected.
+
 ## Histogram
 
 ```ts

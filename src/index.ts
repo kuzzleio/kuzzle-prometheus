@@ -9,6 +9,7 @@ export type {
   Counter,
   DefaultMetricsOptions,
   Gauge,
+  GaugeConfiguration,
   Histogram,
   HistogramConfiguration,
   LabelValues,
