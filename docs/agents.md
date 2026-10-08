@@ -33,7 +33,7 @@ Never declare a metric inside a function that runs per request or per message: t
 ## Choose the type
 
 - Something happened → `counter`, name ends with `_total`.
-- A current level (connections, queue size) → `gauge`.
+- A current level (connections, queue size) → `gauge`; when that level can be read at any time (a connection state, a readiness flag), set it in the gauge's `collect` callback rather than on every change.
 - A duration or a size → `histogram`, name ends with the unit in base units (`_seconds`, `_bytes`), with explicit `buckets`.
 
 ## Labels: the rule that matters most

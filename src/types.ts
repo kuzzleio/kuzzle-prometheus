@@ -104,6 +104,17 @@ export interface HistogramConfiguration<
   buckets?: number[];
 }
 
+export interface GaugeConfiguration<
+  L extends string,
+> extends MetricConfiguration<L> {
+  /**
+   * Called at every scrape, before rendering: sets the gauge from a current
+   * state (a connection, a readiness flag). It may be async. If it throws,
+   * the error is logged and the gauge keeps its previous values.
+   */
+  collect?: (gauge: Gauge<L>) => void | Promise<void>;
+}
+
 /**
  * A metric without labels takes no labels argument.
  */

@@ -5,6 +5,7 @@ import type {
   Counter,
   DefaultMetricsOptions,
   Gauge,
+  GaugeConfiguration,
   Histogram,
   HistogramConfiguration,
   MetricConfiguration,
@@ -156,12 +157,19 @@ export class Metrics {
   }
 
   gauge<const L extends string = never>(
-    configuration: MetricConfiguration<L>,
+    configuration: GaugeConfiguration<L>,
   ): Gauge<L> {
+    const { collect } = configuration;
     const { metric, guard, hasLabels } = this.declare(
       "gauge",
       configuration,
-      (common) => new client.Gauge(common),
+      (common) =>
+        new client.Gauge({
+          ...common,
+          ...(collect
+            ? { collect: () => this.collectGauge(common.name, collect, gauge) }
+            : {}),
+        }),
     );
 
     const apply =
@@ -173,11 +181,13 @@ export class Metrics {
         }
       };
 
-    return {
+    const gauge = {
       set: apply("set"),
       inc: apply("inc", 1),
       dec: apply("dec", 1),
     } as Gauge<L>;
+
+    return gauge;
   }
 
   histogram<const L extends string = never>(
@@ -273,6 +283,21 @@ export class Metrics {
    */
   static registryOf(metrics: Metrics): client.Registry {
     return metrics.registry;
+  }
+
+  /**
+   * A failing callback must not fail the whole scrape.
+   */
+  private async collectGauge<L extends string>(
+    name: string,
+    collect: (gauge: Gauge<L>) => void | Promise<void>,
+    gauge: Gauge<L>,
+  ): Promise<void> {
+    try {
+      await collect(gauge);
+    } catch (error) {
+      this.logger.warn(`Cannot collect gauge "${name}": ${String(error)}`);
+    }
   }
 
   private rejectLabelSet(metric: string, firstTime: boolean): void {

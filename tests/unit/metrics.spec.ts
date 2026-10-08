@@ -129,6 +129,52 @@ describe("gauge", () => {
     expect(text).toMatch(/^queue_size 8$/m);
     expect(text).toContain('connections{protocol="mqtt"} 6');
   });
+
+  it("sets its value at every scrape with collect", async () => {
+    const metrics = quiet();
+    let connected = true;
+    metrics.gauge({
+      collect: (gauge) => gauge.set(connected ? 1 : 0),
+      help: "h",
+      name: "broker_connected",
+    });
+    metrics.gauge({
+      collect: async (gauge) => {
+        await Promise.resolve();
+        gauge.set({ protocol: "tcp" }, connected ? 1 : 0);
+      },
+      help: "h",
+      labelNames: ["protocol"],
+      name: "adapter_ready",
+    });
+
+    expect(await body(metrics)).toMatch(/^broker_connected 1$/m);
+    connected = false;
+    const text = await body(metrics);
+    expect(text).toMatch(/^broker_connected 0$/m);
+    expect(text).toContain('adapter_ready{protocol="tcp"} 0');
+  });
+
+  it("logs a failing collect and keeps rendering", async () => {
+    const warn = vi.fn();
+    const metrics = quiet({ logger: { warn } });
+    const ready = metrics.gauge({
+      collect: () => {
+        throw new Error("broker unreachable");
+      },
+      help: "h",
+      name: "ready",
+    });
+    ready.set(1);
+    metrics.counter({ help: "h", name: "events_total" }).inc();
+
+    const text = await body(metrics);
+    expect(text).toMatch(/^ready 1$/m);
+    expect(text).toMatch(/^events_total 1$/m);
+    expect(warn).toHaveBeenCalledWith(
+      'Cannot collect gauge "ready": Error: broker unreachable',
+    );
+  });
 });
 
 describe("histogram", () => {
