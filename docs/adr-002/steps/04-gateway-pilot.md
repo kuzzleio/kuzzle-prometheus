@@ -22,7 +22,8 @@ The HTTP/TCP ingestion gateway, a Node service outside Kuzzle, exposes its metri
 - 2026-10-08 — Gateway migrated: its Fastify plugin creates the instance (`prefix: "gateway_"`, `service` per app) and serves `render()`; metrics declared on it with unchanged names; `prom-client` removed. Draft PR opened on the gateway's repository, on `kuzzle-prometheus@1.0.0-beta.2`: it stays a draft until the production versions (1.0.0, then without the `minimumReleaseAgeExclude` entry).
 
 - 2026-10-08 — Review pass on both repositories before the real-application test: a gauge `collect` that never settles is given up after 5 s (kuzzle-prometheus#7, `1.0.0-beta.3`); the plugin moves to it (it was on beta.1, without the gauge `collect`); `docs/upgrading.md` documents the plugin API change and pins Node 20 users to `~5.0`.
-- 2026-10-09 — `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (hub, decision 8): the plugin's real-application test before 1.0.0 now runs in iot-platform-v4 on `kuzzle-prometheus/kuzzle`.
+- 2026-10-09 — `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (hub, decision 8): the plugin's real-application test before 1.0.0 now runs in the IoT platform on `kuzzle-prometheus/kuzzle`.
+- 2026-10-09 — The PaaS console's API takes that test first (Kuzzle 2.59 on Node 24 already), on staging; the IoT platform must move to Kuzzle 2.59 first.
 
 ## Local decisions / gotchas
 
