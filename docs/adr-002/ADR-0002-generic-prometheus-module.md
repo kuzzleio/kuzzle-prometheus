@@ -70,8 +70,8 @@ State observed on 2026-10-06:
 | 02 | Create `kuzzleio/kuzzle-prometheus` with the ADR-0001 baseline (CI, semantic-release, OIDC publishing), modelled on `kuzzle-logger` | ✅ Done | #1 | [detail](steps/02-kuzzle-prometheus-repository.md) |
 | 03 | Extract the module into it (`.` + `./kuzzle`), move to `@prometheus-io/client`, typed API, common labels, configurable request buckets; `kuzzle-plugin-prometheus` 5.x re-exports it (since deprecated) | ✅ Done | #2, #3, #4, kuzzle-plugin-prometheus#56 | [detail](steps/03-module-extraction.md) |
 | 04 | Pilot: migrate the HTTP/TCP gateway to the module, metric names unchanged | 🟦 In progress | #5 | [detail](steps/04-gateway-pilot.md) |
-| 05 | PaaS: pod discovery in Alloy, first Kuzzle alert rules in Cockpit | ⬜ To do | — | kuzzle-plugin-prometheus#62 |
-| 06 | IoT platform: `kuzzle-prometheus/kuzzle` loaded by default in `registerKIoTP`, opt-out, templates updated | ⬜ To do | — | kuzzle-plugin-prometheus#63 (templates: #50) |
+| 05 | PaaS: pod discovery in Alloy, first Kuzzle alert rules in Cockpit | ⬜ To do | — | #10 |
+| 06 | IoT platform: `kuzzle-prometheus/kuzzle` loaded by default in `registerKIoTP`, opt-out, templates updated | ⬜ To do | — | #11 (templates: #12) |
 
 Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so that the default only ships once the metrics are collected.
 
@@ -108,7 +108,7 @@ The release sequence is tracked in #8.
 
 - Test `kuzzle-prometheus/kuzzle` (beta) in a real Kuzzle application (iot-platform-v4) before releasing 1.0.0.
 - At 1.0.0, remove the `bootstrap` dist-tag of `kuzzle-prometheus` and check that `latest` is 1.0.0.
-- `kuzzle-plugin-prometheus` wind-down: issues #62, #63, #50 and #48 to transfer here, #46 and #49 to close, `NPM_TOKEN` to revoke (#47), `5-dev` and the v5 tags and releases to delete, `master` back on 4.2.1 with a deprecation README, docs.kuzzle.io entry, then archive.
+- `kuzzle-plugin-prometheus` wound down on 2026-10-09 (`master` back on 4.2.1 with a deprecation README, `5-dev` and the v5 tags and releases deleted, open issues transferred here as #10–#13, repository archived). Left: revoke the npm token it used (no repository secret left) and merge the docs.kuzzle.io tile (kuzzleio/documentation#604).
 
 ## References
 

@@ -26,7 +26,7 @@
       "openPoints": [
         "Kuzzle plugin validated on the demo stack only: test it in iot-platform-v4 before releasing 1.0.0.",
         "At 1.0.0: remove the bootstrap dist-tag (latest is still 0.0.0-bootstrap.0) and check latest.",
-        "kuzzle-plugin-prometheus wind-down: transfer #62 #63 #50 #48, close #46 #49, revoke NPM_TOKEN, delete 5-dev and v5 tags/releases, master back on 4.2.1, docs.kuzzle.io, archive."
+        "kuzzle-plugin-prometheus archived: revoke the npm token it used and merge the docs.kuzzle.io tile (kuzzleio/documentation#604)."
       ]
     }
   ]
