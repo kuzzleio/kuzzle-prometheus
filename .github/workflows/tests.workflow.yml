@@ -1,8 +1,8 @@
 name: Tests
 
 # Reusable: the same checks gate pull requests and every push to a dev or
-# release branch. Node 22 and 24 are the supported runtimes (ADR-0002 in
-# kuzzleio/kuzzle-plugin-prometheus); lint and types do not depend on the
+# release branch. Node 22 and 24 are the supported runtimes (ADR-0002,
+# docs/adr-002/); lint and types do not depend on the
 # runtime, so they run once, on 24.
 on:
   workflow_call:

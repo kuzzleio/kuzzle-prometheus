@@ -13,7 +13,7 @@ The plugin needs two things the public API does not offer: completing the config
 
 Applications never see `@prometheus-io/client`: its types do not appear in the public API, so that its breaking changes (it is pre-1.0) stop at the wrapper.
 
-Design and history: [ADR-0002](https://github.com/kuzzleio/kuzzle-plugin-prometheus/blob/master/docs/adr-002/ADR-0002-generic-prometheus-module.md) in `kuzzle-plugin-prometheus`.
+Design and history: [ADR-0002](docs/adr-002/ADR-0002-generic-prometheus-module.md). ADRs follow the `adr` skill (`.claude/skills/adr/`); `docs/adr-state.json` mirrors their state, and CI checks it and the size budgets of the documentation (`docs/doc-budgets.json`).
 
 ## Commands
 
@@ -22,6 +22,7 @@ npm ci
 npm test              # lint + types + unit tests: run before every commit
 docker compose up -d --wait && npm run test:functional   # against a real Kuzzle
 docker compose down -v
+docker compose -f demo/docker-compose.yml up -d --wait --scale kuzzle=3   # demo: Prometheus :9090, Grafana :3000
 npm run test:lint:fix
 npm run build         # dist/, CommonJS + .d.ts
 npm pack --dry-run    # check what ships
