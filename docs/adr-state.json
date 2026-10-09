@@ -26,7 +26,6 @@
       "openPoints": [
         "Kuzzle plugin validated on the demo stack only: test it in the PaaS console's API (staging) before releasing 1.0.0.",
         "At 1.0.0: remove the bootstrap dist-tag (latest is still 0.0.0-bootstrap.0) and check latest.",
-        "kuzzle-plugin-prometheus archived: revoke the npm token it used.",
         "Step 06: always create the plugin, stable access to metrics even when disabled; no instance prefix, kiotp_* for the platform."
       ]
     }

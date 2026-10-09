@@ -115,7 +115,7 @@ The release sequence is tracked in #8.
 
 - Test `kuzzle-prometheus/kuzzle` (beta) in a real Kuzzle application (the PaaS console's API, on staging) before releasing 1.0.0.
 - At 1.0.0, remove the `bootstrap` dist-tag of `kuzzle-prometheus` and check that `latest` is 1.0.0.
-- `kuzzle-plugin-prometheus` wound down on 2026-10-09 (`master` back on 4.2.1 with a deprecation README, `5-dev` and the v5 tags and releases deleted, open issues transferred here as #10–#13, repository archived). The docs.kuzzle.io tile points here (kuzzleio/documentation#604). Left: revoke the npm token it used (no repository secret left).
+- `kuzzle-plugin-prometheus` wound down on 2026-10-09 (`master` back on 4.2.1 with a deprecation README, `5-dev` and the v5 tags and releases deleted, open issues transferred here as #10–#13, repository archived). The docs.kuzzle.io tile points here (kuzzleio/documentation#604). Nothing left: the `NPM_TOKEN` it used before trusted publishing is an organisation secret other repositories still publish with, so it stays.
 
 ## References
 
