@@ -60,7 +60,8 @@ State observed on 2026-10-06:
 - Steps 01–03 done: the module and the Kuzzle plugin live in `kuzzle-prometheus` (`1.0.0-beta.3` on npm `beta`; npm `latest` is still the empty `0.0.0-bootstrap.0`).
 - 2026-10-09: `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (decision 8); its ADRs, integration guide and demo stack moved here.
 - Step 04 open: pilot on the HTTP/TCP gateway, migrated in a **draft** PR on its repository (kept as draft until the production versions), on `kuzzle-prometheus@1.0.0-beta.2`; ingestor and worker validated end to end on the beta.
-- **Next action:** test `kuzzle-prometheus/kuzzle` (beta) in iot-platform-v4, release `kuzzle-prometheus` 1.0.0, then move the gateway's draft PR to it and close step 04.
+- The PaaS console's API (Kuzzle 2.59, Node 24, plugin 4.2.1) is the first real Kuzzle application to test `kuzzle-prometheus/kuzzle`, on staging; the IoT platform follows once it runs Kuzzle 2.59.
+- **Next action:** move the PaaS console's API to `kuzzle-prometheus/kuzzle` (beta) on staging, release `kuzzle-prometheus` 1.0.0 on its feedback, then move the gateway's draft PR to it and close step 04.
 
 ## Steps
 
@@ -70,7 +71,7 @@ State observed on 2026-10-06:
 | 02 | Create `kuzzleio/kuzzle-prometheus` with the ADR-0001 baseline (CI, semantic-release, OIDC publishing), modelled on `kuzzle-logger` | ✅ Done | #1 | [detail](steps/02-kuzzle-prometheus-repository.md) |
 | 03 | Extract the module into it (`.` + `./kuzzle`), move to `@prometheus-io/client`, typed API, common labels, configurable request buckets; `kuzzle-plugin-prometheus` 5.x re-exports it (since deprecated) | ✅ Done | #2, #3, #4, kuzzle-plugin-prometheus#56 | [detail](steps/03-module-extraction.md) |
 | 04 | Pilot: migrate the HTTP/TCP gateway to the module, metric names unchanged | 🟦 In progress | #5 | [detail](steps/04-gateway-pilot.md) |
-| 05 | PaaS: pod discovery in Alloy, first Kuzzle alert rules in Cockpit | ⬜ To do | — | #10 |
+| 05 | PaaS: pod discovery in Alloy, first Kuzzle alert rules in Cockpit (carried out by the PaaS team, tracked on its side) | ⬜ To do | — | #10 |
 | 06 | IoT platform: `kuzzle-prometheus/kuzzle` loaded by default in `registerKIoTP`, opt-out, templates updated | ⬜ To do | — | #11 (templates: #12) |
 
 Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so that the default only ships once the metrics are collected.
@@ -100,15 +101,21 @@ Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so t
 - 2026-10-09 — Kuzzle core does not embed the module for now: Kuzzle 2.x supports Node 20, `@prometheus-io/client` needs 22+, and enabling metrics is the application's choice.
 - 2026-10-09 — `kuzzle-plugin-prometheus` deprecated (supersedes decision 8's 5.x line): 5.x unpublished from npm, `latest` back on 4.2.1, whole package deprecated towards `kuzzle-prometheus/kuzzle`; `5-dev` not released.
 - 2026-10-09 — ADRs, ADR tooling, integration guide (`docs/kuzzle-stack.md`) and demo stack (`demo/`) moved to `kuzzle-prometheus`; a migration guide replaces the plugin's upgrade guide; the plugin repository is archived after.
-- 2026-10-09 — The real-application test of the Kuzzle plugin moves to iot-platform-v4 (step 06 imports `kuzzle-prometheus/kuzzle`).
+- 2026-10-09 — The real-application test of the Kuzzle plugin moves to the IoT platform (step 06 imports `kuzzle-prometheus/kuzzle`).
+- 2026-10-09 — The PaaS console's API tests the Kuzzle plugin first (supersedes the line above for the 1.0.0 gate): it already runs Kuzzle 2.59 on Node 24, the IoT platform does not yet.
+- 2026-10-09 — Step 05 is carried out by the PaaS team (Alloy scrape, metric filter, scraping role, alert rules); this ADR keeps the row and #10.
+- 2026-10-09 — Step 06: the IoT platform always creates the plugin and gives its modules and the customer's code stable access to `metrics`, even when `plugins.prometheus.enabled` is `false` (declarations then work, nothing is exposed).
+- 2026-10-09 — Step 06: no prefix on the IoT platform's instance; metrics carry full names, `kiotp_*` for the platform, the customer's own prefix for project code. No `scope()` API unless the convention falls short.
+- 2026-10-09 — A library never calls `createMetrics()`: it receives the host's `Metrics` (a service's `createMetrics()`, a Kuzzle application's `plugin.metrics`). To document when the first shared library needs it.
+- 2026-10-09 — Who sets `service` and `environment` (the module or the scraper's relabelling, which uses the same names) and the cost of `nodeId` (a new series set per restart) are settled at collection (step 05), not in the module.
 
 ## Open points
 
 The release sequence is tracked in #8.
 
-- Test `kuzzle-prometheus/kuzzle` (beta) in a real Kuzzle application (iot-platform-v4) before releasing 1.0.0.
+- Test `kuzzle-prometheus/kuzzle` (beta) in a real Kuzzle application (the PaaS console's API, on staging) before releasing 1.0.0.
 - At 1.0.0, remove the `bootstrap` dist-tag of `kuzzle-prometheus` and check that `latest` is 1.0.0.
-- `kuzzle-plugin-prometheus` wound down on 2026-10-09 (`master` back on 4.2.1 with a deprecation README, `5-dev` and the v5 tags and releases deleted, open issues transferred here as #10–#13, repository archived). Left: revoke the npm token it used (no repository secret left) and merge the docs.kuzzle.io tile (kuzzleio/documentation#604).
+- `kuzzle-plugin-prometheus` wound down on 2026-10-09 (`master` back on 4.2.1 with a deprecation README, `5-dev` and the v5 tags and releases deleted, open issues transferred here as #10–#13, repository archived). The docs.kuzzle.io tile points here (kuzzleio/documentation#604). Nothing left: the `NPM_TOKEN` it used before trusted publishing is an organisation secret other repositories still publish with, so it stays.
 
 ## References
 
