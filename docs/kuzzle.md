@@ -134,4 +134,4 @@ Keep `labels` values fixed for the life of the process, and do not use `nodeId`,
 
 - [Kuzzle metrics reference](kuzzle-metrics.md): every metric the plugin exposes, and PromQL examples.
 - [Troubleshooting](troubleshooting.md).
-- [Integration guide](https://github.com/kuzzleio/kuzzle-plugin-prometheus/blob/5-dev/docs/kuzzle-stack.md) (`kuzzle-plugin-prometheus`): a dedicated scraper user, Prometheus jobs for clusters, Kubernetes, Grafana dashboards.
+- [Integration guide](kuzzle-stack.md): a dedicated scraper user, Prometheus jobs for clusters, Kubernetes, Grafana dashboards.

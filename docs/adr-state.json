@@ -1,0 +1,33 @@
+{
+  "$comment": "CURRENT STATE of the ADR efforts, never their history: the hubs under docs/adr-<n>/ carry the narrative, this file is only their structured extract. It feeds the digest injected at every Claude Code session start (.claude/settings.json → `node .ci/scripts/adr-state.mts --digest`). Schema checked in CI (`--check`): status ∈ proposed | accepted | active | closed | abandoned; nextAction = ONE imperative action ≤ 300 chars, never what was just done; blockers ≤ 4 × 200 chars; openPoints ≤ 6 × 200 chars, no ✅ entry (what is done leaves this file); whole file ≤ 8 KB. Replace fields, never append a report to them. Public repository: nothing private here (client projects, private plugins). Detail: adr skill.",
+  "snapshot": "2026-10-09",
+  "latestVersion": "0.0.0-bootstrap.0",
+  "adrs": [
+    {
+      "id": "0001",
+      "hub": "docs/adr-001/ADR-0001-maintenance-baseline.md",
+      "title": "Maintenance baseline: Node 20/22/24, dependencies, release pipeline, docs",
+      "status": "closed",
+      "statusLabel": "🔒 Closed · 5.0.0 released",
+      "openStep": null,
+      "nextAction": null,
+      "blockers": [],
+      "openPoints": []
+    },
+    {
+      "id": "0002",
+      "hub": "docs/adr-002/ADR-0002-generic-prometheus-module.md",
+      "title": "Generic Prometheus module, and the Kuzzle plugin built on it",
+      "status": "active",
+      "statusLabel": "🟦 Step 04 · gateway pilot",
+      "openStep": "docs/adr-002/steps/04-gateway-pilot.md",
+      "nextAction": "Test kuzzle-prometheus/kuzzle (beta) in iot-platform-v4, release kuzzle-prometheus 1.0.0, then move the gateway's draft PR to it and close step 04.",
+      "blockers": [],
+      "openPoints": [
+        "Kuzzle plugin validated on the demo stack only: test it in iot-platform-v4 before releasing 1.0.0.",
+        "At 1.0.0: remove the bootstrap dist-tag (latest is still 0.0.0-bootstrap.0) and check latest.",
+        "kuzzle-plugin-prometheus archived: revoke the npm token it used and merge the docs.kuzzle.io tile (kuzzleio/documentation#604)."
+      ]
+    }
+  ]
+}

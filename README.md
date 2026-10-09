@@ -36,12 +36,14 @@ http.createServer(metrics.handler).listen(9464);
 | [Configuration](docs/configuration.md) | every option and environment variable |
 | [Kuzzle plugin](docs/kuzzle.md) | expose a Kuzzle backend's metrics, add the application's own |
 | [Kuzzle metrics reference](docs/kuzzle-metrics.md) | what each Kuzzle metric means, PromQL examples |
+| [Integrating in a Kuzzle stack](docs/kuzzle-stack.md) | scraper rights, Prometheus jobs for a cluster or Kubernetes, Grafana dashboards, the demo stack |
+| [Migrating from kuzzle-plugin-prometheus](docs/migrating-from-kuzzle-plugin-prometheus.md) | move a Kuzzle application from the deprecated plugin to `kuzzle-prometheus/kuzzle` |
 | [Troubleshooting](docs/troubleshooting.md) | symptoms, causes and fixes |
 | [For AI agents](docs/agents.md) | rules an agent follows when it adds metrics to an application |
 
 The documentation ships in the npm package: `node_modules/kuzzle-prometheus/docs/`.
 
-Deploying it in a full Kuzzle stack (permissions, Prometheus, Kubernetes, Grafana dashboards) is covered by the [integration guide](https://github.com/kuzzleio/kuzzle-plugin-prometheus/blob/5-dev/docs/kuzzle-stack.md) of `kuzzle-plugin-prometheus`.
+`kuzzle-prometheus/kuzzle` replaces the deprecated [`kuzzle-plugin-prometheus`](https://www.npmjs.com/package/kuzzle-plugin-prometheus): same metrics, routes and configuration.
 
 ## Requirements
 
@@ -57,7 +59,7 @@ npm run build     # dist/
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org/): releases, versions and changelogs are produced by semantic-release from them. Contributors, human or agent, start with [AGENTS.md](AGENTS.md).
 
-The design is recorded in [ADR-0002](https://github.com/kuzzleio/kuzzle-plugin-prometheus/blob/master/docs/adr-002/ADR-0002-generic-prometheus-module.md) of `kuzzle-plugin-prometheus`.
+Design decisions and their history are recorded as ADRs under [`docs/adr-001/`](docs/adr-001) and onwards; the demo stack (Kuzzle, Prometheus, Grafana dashboards) is in [`demo/`](demo).
 
 ## License
 

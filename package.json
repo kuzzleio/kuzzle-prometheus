@@ -71,7 +71,7 @@
     "dist/",
     "LICENSE",
     "README.md",
-    "docs/"
+    "docs/*.md"
   ],
   "dependencies": {
     "@prometheus-io/client": "0.16.1"
