@@ -1,3 +1,9 @@
+## [1.0.0-beta.4](https://github.com/kuzzleio/kuzzle-prometheus/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2026-10-12)
+
+### Features
+
+* **kuzzle:** `core.nodeIdLabel` to leave the `nodeId` label out ([2914a2e](https://github.com/kuzzleio/kuzzle-prometheus/commit/2914a2e316b48fb763b9cf82361f8dd7e3536709))
+
 ## [1.0.0-beta.3](https://github.com/kuzzleio/kuzzle-prometheus/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2026-10-08)
 
 ### Bug Fixes
