@@ -188,6 +188,15 @@ Series per node, with the default configuration:
 
 Every restart creates a new `nodeId`, hence a new set of series; the old ones go stale after 5 minutes. Frequent restarts (autoscaling, crash loops) multiply the series Prometheus stores over its retention.
 
+Reduce the request histogram at the source with fewer `core.requestDurationBuckets`. To drop buckets at collection instead, match `le` both ways: Prometheus 3 and Grafana Alloy normalise it to a float (`15.0`) before relabelling, so a regex on `le="15"` silently drops nothing:
+
+```yaml
+    metric_relabel_configs:
+      - source_labels: [__name__, le]
+        regex: "kuzzle_api_request_duration_ms_bucket;(?:15|300)(?:\\.0)?"
+        action: drop
+```
+
 ## 5. Grafana dashboards
 
 Two dashboards are in [`demo/config/grafana/dashboards/`](../demo/config/grafana/dashboards) (in the repository, not in the npm package), both with a `nodeId` filter:

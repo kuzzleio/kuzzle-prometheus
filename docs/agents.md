@@ -46,7 +46,7 @@ A label value must come from a **small, fixed set** (protocol, status code, outc
 
 If you need per-entity detail, it belongs in logs, not metrics. Past `maxLabelSets` combinations, the module drops new ones and logs a warning: treat that warning as a bug in the metric's labels.
 
-Never add `project`, `environment` or `service` to `labelNames`: they are common labels, added automatically (declaring them throws).
+Never add `project`, `environment` or `service` to `labelNames`: they are common labels, added automatically (declaring them throws). If the platform that collects the metrics sets labels with these names, do not guess which value wins: ask, and see [Configuration → Common labels](configuration.md#common-labels).
 
 ## Names
 

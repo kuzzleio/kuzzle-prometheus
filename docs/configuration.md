@@ -25,6 +25,13 @@
 
 Set `service` in code: it names the program. Let the deployment set `project` and `environment` through the environment variables.
 
+**When the collection platform sets the same labels.** Many platforms add their own `environment` or `service` (a cluster, a namespace) to every series, and the two values mean different things. What happens then depends on where the platform sets them:
+
+- as a target label (service discovery, `relabel_configs`): Prometheus keeps the platform's value and renames the module's one to `exported_environment`, unless `honor_labels: true` keeps the module's;
+- after the scrape (`metric_relabel_configs`, a Grafana Alloy `prometheus.relabel`, a remote-write pipeline): the module's value is replaced without warning, and `honor_labels` cannot help.
+
+Settle it before collecting: let a single side own each label, and rename the other (for example `cluster` or `namespace` on the platform side), so that queries joining both keep working.
+
 ## Example
 
 ```ts
