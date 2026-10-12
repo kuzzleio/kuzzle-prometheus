@@ -82,6 +82,7 @@ The `plugins.prometheus` section of Kuzzle's configuration, read once at startup
     "prometheus": {
       "core": {
         "monitorRequestDuration": true,
+        "nodeIdLabel": true,
         "prefix": "kuzzle_",
         "requestDurationBuckets": [0.1, 5, 15, 50, 100, 200, 300, 400, 500]
       },
@@ -104,6 +105,7 @@ The `plugins.prometheus` section of Kuzzle's configuration, read once at startup
 | --- | --- | --- |
 | `core.prefix` | `"kuzzle_"` | prefix of the Kuzzle metrics and of the request duration histogram; the shipped dashboards expect `kuzzle_` |
 | `core.monitorRequestDuration` | `true` | records every API request in `<prefix>api_request_duration_ms` |
+| `core.nodeIdLabel` | `true` | adds the `nodeId` label to every metric; `false` when the scrape target already identifies the node (a Kubernetes pod), since each restart opens new series |
 | `core.requestDurationBuckets` | `[0.1, 5, 15, 50, 100, 200, 300, 400, 500]` | buckets of that histogram, in milliseconds, ascending |
 | `default.enabled` | `true` | Node.js process metrics |
 | `default.prefix` | `""` | prefix of the Node.js metrics; empty so that standard dashboards work |
@@ -124,7 +126,7 @@ If you register the plugin under another name (`app.plugin.use(plugin, { name: "
 
 Every metric of the node carries:
 
-- `nodeId`: the Kuzzle node ID, new at each restart;
+- `nodeId`: the Kuzzle node ID, new at each restart (unless `core.nodeIdLabel` is `false`);
 - the common labels `project`, `environment`, `service` (see [Configuration](configuration.md#common-labels)), from `labels` or from the `KUZZLE_PROMETHEUS_*` environment variables, `labels` winning;
 - every other pair of `labels`.
 

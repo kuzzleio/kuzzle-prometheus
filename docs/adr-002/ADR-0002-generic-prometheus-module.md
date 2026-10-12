@@ -108,6 +108,7 @@ Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so t
 - 2026-10-09 — Step 06: no prefix on the IoT platform's instance; metrics carry full names, `kiotp_*` for the platform, the customer's own prefix for project code. No `scope()` API unless the convention falls short.
 - 2026-10-09 — A library never calls `createMetrics()`: it receives the host's `Metrics` (a service's `createMetrics()`, a Kuzzle application's `plugin.metrics`). To document when the first shared library needs it.
 - 2026-10-09 — Who sets `service` and `environment` (the module or the scraper's relabelling, which uses the same names) and the cost of `nodeId` (a new series set per restart) are settled at collection (step 05), not in the module.
+- 2026-10-12 — `core.nodeIdLabel` (default `true`): the plugin can leave `nodeId` out when the scrape target identifies the node, as the PaaS console asked; removing it by default would break the contract.
 
 ## Open points
 

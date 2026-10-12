@@ -186,7 +186,7 @@ Series per node, with the default configuration:
 - Node.js metrics: about 100 (with the event loop utilization summary and histogram);
 - request histogram: 12 per controller × action × protocol × status combination actually used. It grows with the API surface clients use: 40 actions over 2 protocols with 3 statuses each give about 2,900 series.
 
-Every restart creates a new `nodeId`, hence a new set of series; the old ones go stale after 5 minutes. Frequent restarts (autoscaling, crash loops) multiply the series Prometheus stores over its retention.
+Every restart creates a new `nodeId`, hence a new set of series; the old ones go stale after 5 minutes. Frequent restarts (autoscaling, crash loops) multiply the series Prometheus stores over its retention. When the scrape target already identifies the node (one node per Kubernetes pod), set `core.nodeIdLabel` to `false`.
 
 ## 5. Grafana dashboards
 

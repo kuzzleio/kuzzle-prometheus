@@ -67,6 +67,7 @@ describe("init", () => {
     expect(plugin.config).toEqual({
       core: {
         monitorRequestDuration: true,
+        nodeIdLabel: true,
         prefix: "custom_",
         requestDurationBuckets: [0.1, 5, 15, 50, 100, 200, 300, 400, 500],
       },
@@ -78,6 +79,20 @@ describe("init", () => {
       },
       labels: { environment: "test", nodeId: "knode-test", replicas: "3" },
     });
+  });
+
+  it("leaves nodeId out when core.nodeIdLabel is false", async () => {
+    const { plugin } = await initPlugin({
+      core: { nodeIdLabel: false },
+      labels: { project: "acme" },
+    });
+    await plugin.pipeFormatMetrics(metricsRequest("http", "prometheus"));
+
+    expect(plugin.config.labels).toEqual({ project: "acme" });
+    const { body } = await plugin.metrics.render();
+    expect(body).toContain('kuzzle_realtime_rooms{project="acme"} 4');
+    expect(body).toMatch(/^process_cpu_user_seconds_total\{project="acme"\} /m);
+    expect(body).not.toContain("nodeId");
   });
 
   it("registers the pipe, the hooks and the HTTP route", async () => {

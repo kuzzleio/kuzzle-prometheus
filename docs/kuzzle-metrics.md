@@ -6,7 +6,7 @@ Names below use the default prefixes: `kuzzle_` for Kuzzle metrics and the reque
 
 | Label | Value |
 | --- | --- |
-| `nodeId` | The ID of the Kuzzle node that served the scrape, as returned in the `X-Kuzzle-Node` response header (e.g. `knode-gaudy-puma-96607`). Kuzzle generates a new ID at each start, so a restarted node produces new series. |
+| `nodeId` | The ID of the Kuzzle node that served the scrape, as returned in the `X-Kuzzle-Node` response header (e.g. `knode-gaudy-puma-96607`). Kuzzle generates a new ID at each start, so a restarted node produces new series. Absent when `core.nodeIdLabel` is `false`. |
 | `project`, `environment`, `service` | The common labels, when set (see [Kuzzle plugin → Labels](kuzzle.md#labels)). |
 | your `labels` | Every other pair of the `labels` configuration key. |
 
