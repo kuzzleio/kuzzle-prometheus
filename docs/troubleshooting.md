@@ -26,6 +26,10 @@ One of the metric's labels takes unbounded values (an ID, a URL, free text): new
 
 The label has no value: set the option, or the `KUZZLE_PROMETHEUS_*` variable in the deployment (in a Kuzzle backend, also `labels`). See [Configuration → Common labels](configuration.md#common-labels).
 
+### `environment` or `service` has another value, or `exported_environment` appears
+
+The collection platform sets the same label. See [Configuration → Common labels](configuration.md#common-labels).
+
 ### Node.js metrics are absent or renamed
 
 `defaultMetrics.enabled` (`default.enabled` in Kuzzle) is `false`, or a prefix changed their names: dashboards built for the unprefixed names then show nothing.
@@ -72,3 +76,7 @@ Slower requests all land in `+Inf`, and `histogram_quantile` cannot return more 
 ### Too many series
 
 The request histogram multiplies with controllers, actions, protocols and statuses, and every restart creates a new `nodeId`. `core.monitorRequestDuration: false` removes the histogram; fewer buckets reduce it.
+
+### A relabel rule on `le` drops nothing
+
+Prometheus 3 and Grafana Alloy normalise `le` to a float (`15.0`) before relabelling: match `(?:15|300)(?:\.0)?`, not `15|300`. See [Integrating in a stack → Cardinality](kuzzle-stack.md#cardinality).

@@ -24,6 +24,7 @@ The HTTP/TCP ingestion gateway, a Node service outside Kuzzle, exposes its metri
 - 2026-10-08 — Review pass on both repositories before the real-application test: a gauge `collect` that never settles is given up after 5 s (kuzzle-prometheus#7, `1.0.0-beta.3`); the plugin moves to it (it was on beta.1, without the gauge `collect`); `docs/upgrading.md` documents the plugin API change and pins Node 20 users to `~5.0`.
 - 2026-10-09 — `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (hub, decision 8): the plugin's real-application test before 1.0.0 now runs in the IoT platform on `kuzzle-prometheus/kuzzle`.
 - 2026-10-09 — The PaaS console's API takes that test first (Kuzzle 2.59 on Node 24 already), on staging; the IoT platform must move to Kuzzle 2.59 first.
+- 2026-10-09 — PaaS console's API on `1.0.0-beta.3`, local then staging (Kuzzle 2.59.0, Node 24, 7 plugins, 2 pods), validation report received 2026-10-12: **no blocker for 1.0.0**. Migration is the package and the import only; the 37 families of 4.2.1 unchanged (names, types, labels, buckets), plus the 3 the migration guide announces; only the label order of the text output changes. A dedicated user whose role allows `prometheus:metrics` only scrapes `/_/metrics` (200; other actions 403; 401 once the key is deleted). After ~3 h: no restart, no plugin warning, scrapes of 20–41 ms. Feedback: the platform's relabelling overwrites `environment` / `service` without warning, and Alloy (Prometheus 3) normalises `le` to `15.0` before relabelling: both documented; an option to leave `nodeId` out (the console drops it at collection, `pod` identifies the node).
 
 ## Local decisions / gotchas
 
@@ -33,6 +34,8 @@ The HTTP/TCP ingestion gateway, a Node service outside Kuzzle, exposes its metri
 - **The module is CommonJS, the gateway ESM** (`"type": "module"`, TypeScript `nodenext`): named imports work, nothing to change.
 
 ## Validation
+
+- PaaS console's API: see the 2026-10-09 entry above (staging, 2 pods).
 
 - Gateway: types, lint, format, 27 tests.
 - Ingestor run against RabbitMQ with HTTP and TCP traffic, `/metrics` compared with `main`: same names, labels, buckets and values; added: `service="ingestor"`, the event loop utilization metrics, and the Prometheus `Content-Type`. Rerun on the published `1.0.0-beta.2`: same result, `collect` gauges set.

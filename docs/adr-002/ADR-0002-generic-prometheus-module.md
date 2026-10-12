@@ -60,8 +60,8 @@ State observed on 2026-10-06:
 - Steps 01–03 done: the module and the Kuzzle plugin live in `kuzzle-prometheus` (`1.0.0-beta.3` on npm `beta`; npm `latest` is still the empty `0.0.0-bootstrap.0`).
 - 2026-10-09: `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (decision 8); its ADRs, integration guide and demo stack moved here.
 - Step 04 open: pilot on the HTTP/TCP gateway, migrated in a **draft** PR on its repository (kept as draft until the production versions), on `kuzzle-prometheus@1.0.0-beta.2`; ingestor and worker validated end to end on the beta.
-- The PaaS console's API (Kuzzle 2.59, Node 24, plugin 4.2.1) is the first real Kuzzle application to test `kuzzle-prometheus/kuzzle`, on staging; the IoT platform follows once it runs Kuzzle 2.59.
-- **Next action:** move the PaaS console's API to `kuzzle-prometheus/kuzzle` (beta) on staging, release `kuzzle-prometheus` 1.0.0 on its feedback, then move the gateway's draft PR to it and close step 04.
+- The PaaS console's API validated `kuzzle-prometheus/kuzzle@1.0.0-beta.3` on staging (2 pods): no blocker for 1.0.0. Its feedback is documented (labels the platform also sets, `le` normalised to a float); an option to leave `nodeId` out is the last change before 1.0.0.
+- **Next action:** release `kuzzle-prometheus` 1.0.0 (#8), then move the gateway's draft PR to it and close step 04.
 
 ## Steps
 
@@ -113,7 +113,6 @@ Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so t
 
 The release sequence is tracked in #8.
 
-- Test `kuzzle-prometheus/kuzzle` (beta) in a real Kuzzle application (the PaaS console's API, on staging) before releasing 1.0.0.
 - At 1.0.0, remove the `bootstrap` dist-tag of `kuzzle-prometheus` and check that `latest` is 1.0.0.
 - `kuzzle-plugin-prometheus` wound down on 2026-10-09 (`master` back on 4.2.1 with a deprecation README, `5-dev` and the v5 tags and releases deleted, open issues transferred here as #10–#13, repository archived). The docs.kuzzle.io tile points here (kuzzleio/documentation#604). Nothing left: the `NPM_TOKEN` it used before trusted publishing is an organisation secret other repositories still publish with, so it stays.
 
