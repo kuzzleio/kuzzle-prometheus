@@ -24,7 +24,8 @@
       "nextAction": "Move the gateway's draft PR to kuzzle-prometheus@1.0.0 and out of draft, then close step 04 (drop its minimumReleaseAgeExclude entry from 2026-10-19).",
       "blockers": [],
       "openPoints": [
-        "Step 06: always create the plugin, stable access to metrics even when disabled; no instance prefix, kiotp_* for the platform."
+        "Step 06: always create the plugin, stable access to metrics even when disabled; no instance prefix, kiotp_* for the platform.",
+        "Step 05: common labels on customer backends (the platform would use other names, e.g. cluster / namespace; service not injected by the console yet), to validate on the PaaS side (#10)."
       ]
     }
   ]
