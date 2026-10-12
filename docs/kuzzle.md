@@ -113,7 +113,7 @@ The `plugins.prometheus` section of Kuzzle's configuration, read once at startup
 | `default.gcDurationBuckets` | `[0.001, 0.01, 0.1, 1, 2, 5]` | GC duration buckets, in seconds |
 | `labels` | `{}` | labels added to every metric of the node |
 
-As with any Kuzzle setting, environment variables override the file, with `__` as separator and `*json:` for arrays:
+As with any Kuzzle setting, environment variables override the file, with `__` as separator and `*json:` for arrays. An array replaces the default, it is not merged with it:
 
 ```sh
 kuzzle_plugins__prometheus__labels__project=acme
