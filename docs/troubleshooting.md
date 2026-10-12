@@ -58,7 +58,7 @@ The plugin requires Kuzzle `>=2.59.0 <3.0.0`; Kuzzle checks it when the plugin l
 
 ### Series disappear and reappear with another `nodeId`
 
-Expected: Kuzzle generates a new node ID at each start. Chart per `instance` or `job` rather than per `nodeId` over long periods. Many `nodeId` values in a short time point to restarting nodes.
+Expected: Kuzzle generates a new node ID at each start. Chart per `instance` or `job` rather than per `nodeId` over long periods. Many `nodeId` values in a short time point to restarting nodes. With one node per scrape target, `core.nodeIdLabel: false` removes the label.
 
 ### Metrics of a node are missing, or counters keep resetting
 

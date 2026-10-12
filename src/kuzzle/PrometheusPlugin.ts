@@ -26,6 +26,14 @@ export type PrometheusPluginConfiguration = {
     monitorRequestDuration?: boolean;
 
     /**
+     * Add the `nodeId` label to every metric of the node. Kuzzle generates a
+     * new node ID at each start, so each restart opens new series: turn it off
+     * when the scrape target already identifies the node (a Kubernetes pod).
+     * @default true
+     */
+    nodeIdLabel?: boolean;
+
+    /**
      * Prefix of the Kuzzle metrics and of the request duration histogram.
      * @default "kuzzle_"
      */
@@ -124,6 +132,7 @@ export class PrometheusPlugin extends Plugin {
   public config: ResolvedConfiguration = {
     core: {
       monitorRequestDuration: true,
+      nodeIdLabel: true,
       prefix: "kuzzle_",
       requestDurationBuckets: DEFAULT_REQUEST_DURATION_BUCKETS,
     },
@@ -174,7 +183,9 @@ export class PrometheusPlugin extends Plugin {
             String(value),
           ]),
         ),
-        nodeId: context.accessors.nodeId,
+        ...(merged.core.nodeIdLabel
+          ? { nodeId: context.accessors.nodeId }
+          : {}),
       },
     };
 
