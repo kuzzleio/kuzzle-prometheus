@@ -1,0 +1,56 @@
+# Functional tests: a Kuzzle running tests/functional/app with the plugin from
+# src/ (`docker compose up -d --wait`, then `npm run test:functional`).
+# NODE_VERSION picks the kuzzle-runner image: 22 or 24.
+services:
+  kuzzle-installer:
+    image: kuzzleio/kuzzle-runner:${NODE_VERSION:-24}-trixie-slim
+    command: bash -c "npm ci"
+    volumes:
+      - .:/var/app
+
+  kuzzle:
+    image: kuzzleio/kuzzle-runner:${NODE_VERSION:-24}-trixie-slim
+    command: npx tsx tests/functional/app/app.ts
+    volumes:
+      - ".:/var/app"
+      - "./tests/functional/app/kuzzlerc:/var/app/.kuzzlerc"
+    ports:
+      - "7512:7512"
+    ulimits:
+      nofile: 65536
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7512/_publicApi"]
+      timeout: 1s
+      interval: 2s
+      retries: 30
+    depends_on:
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kuzzle-installer:
+        condition: service_completed_successfully
+    environment:
+      - kuzzle_services__storageEngine__client__node=http://elasticsearch:9200
+      - kuzzle_services__storageEngine__commonMapping__dynamic=true
+      - kuzzle_services__internalCache__node__host=redis
+      - kuzzle_services__memoryStorage__node__host=redis
+      - NODE_ENV=development
+
+  redis:
+    image: redis:6
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  elasticsearch:
+    image: kuzzleio/elasticsearch:7
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 5s
+      timeout: 2s
+      retries: 15
+    ulimits:
+      nofile: 65536

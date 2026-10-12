@@ -11,6 +11,16 @@ export default defineConfig({
           name: "unit",
         },
       },
+      {
+        // Runs against the Docker Compose stack (`docker compose up -d --wait`)
+        extends: true,
+        test: {
+          environment: "node",
+          include: ["tests/functional/**/*.spec.ts"],
+          name: "functional",
+          testTimeout: 10000,
+        },
+      },
     ],
   },
 });

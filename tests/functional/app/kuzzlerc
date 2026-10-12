@@ -1,0 +1,10 @@
+{
+  "plugins": {
+    "prometheus": {
+      "labels": {
+        "environment": "dev",
+        "project": "prometheus-plugin"
+      }
+    }
+  }
+}

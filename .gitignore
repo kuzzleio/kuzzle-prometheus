@@ -3,3 +3,5 @@ dist/
 coverage/
 *.tsbuildinfo
 /.idea
+# Created by the Docker Compose bind mount of tests/functional/app/kuzzlerc
+.kuzzlerc
