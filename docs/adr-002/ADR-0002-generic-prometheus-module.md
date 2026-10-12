@@ -60,7 +60,7 @@ State observed on 2026-10-06:
 - Steps 01–03 done: the module and the Kuzzle plugin live in `kuzzle-prometheus` (`1.0.0-beta.4` on npm `beta`; npm `latest` is still the empty `0.0.0-bootstrap.0`).
 - 2026-10-09: `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (decision 8); its ADRs, integration guide and demo stack moved here.
 - Step 04 open: pilot on the HTTP/TCP gateway, migrated in a **draft** PR on its repository (kept as draft until the production versions), on `kuzzle-prometheus@1.0.0-beta.2`; ingestor and worker validated end to end on the beta.
-- The PaaS console's API validated `kuzzle-prometheus/kuzzle@1.0.0-beta.3` on staging (2 pods): no blocker for 1.0.0. Its feedback is documented (labels the platform also sets, `le` normalised to a float); `core.nodeIdLabel: false` leaves `nodeId` out (#16, `1.0.0-beta.4`).
+- The PaaS console's API validated `kuzzle-prometheus/kuzzle@1.0.0-beta.3` on staging (2 pods): no blocker for 1.0.0. Its feedback is documented (labels the platform also sets, `le` normalised to a float); `core.nodeIdLabel: false` leaves `nodeId` out (#16, `1.0.0-beta.4`), validated locally by the console, staging check pending.
 - **Next action:** release `kuzzle-prometheus` 1.0.0 (#8), then move the gateway's draft PR to it and close step 04.
 
 ## Steps
