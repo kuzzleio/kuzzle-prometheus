@@ -59,9 +59,9 @@ State observed on 2026-10-06:
 
 - Steps 01–03 done: the module and the Kuzzle plugin live in `kuzzle-prometheus` `1.0.0` released on npm `latest` on 2026-10-12 (#19), after 4 betas.
 - 2026-10-09: `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (decision 8); its ADRs, integration guide and demo stack moved here.
-- Step 04 open: pilot on the HTTP/TCP gateway, migrated in a **draft** PR on its repository (kept as draft until the production versions), on `kuzzle-prometheus@1.0.0-beta.2`; ingestor and worker validated end to end on the beta.
+- Step 04 open: pilot on the HTTP/TCP gateway, ingestor and worker validated end to end on the beta; migration merged on the gateway's `main` on `kuzzle-prometheus@1.0.0` (kuzzleio/gateway#21, 2026-10-13), its `minimumReleaseAgeExclude` entry still in place.
 - The PaaS console's API validated `kuzzle-prometheus/kuzzle@1.0.0-beta.3` on staging (2 pods): no blocker for 1.0.0. Its feedback is documented (labels the platform also sets, `le` normalised to a float); `core.nodeIdLabel: false` leaves `nodeId` out (#16, `1.0.0-beta.4`), validated by the console on staging (2 pods). The console runs `1.0.0` in production since 2026-10-12 and sets the common labels itself (no relabelling of its scrape); customer backends' labels are still open on the PaaS side.
-- **Next action:** move the gateway's draft PR to `kuzzle-prometheus@1.0.0` and take it out of draft, then close step 04; its `minimumReleaseAgeExclude` entry can go from 2026-10-19 (pnpm's 7 days).
+- **Next action:** from 2026-10-19 (pnpm's 7 days), drop `kuzzle-prometheus` from the gateway's `minimumReleaseAgeExclude` in a follow-up PR, then close step 04.
 
 ## Steps
 

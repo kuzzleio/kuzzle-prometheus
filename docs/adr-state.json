@@ -1,6 +1,6 @@
 {
   "$comment": "CURRENT STATE of the ADR efforts, never their history: the hubs under docs/adr-<n>/ carry the narrative, this file is only their structured extract. It feeds the digest injected at every Claude Code session start (.claude/settings.json → `node .ci/scripts/adr-state.mts --digest`). Schema checked in CI (`--check`): status ∈ proposed | accepted | active | closed | abandoned; nextAction = ONE imperative action ≤ 300 chars, never what was just done; blockers ≤ 4 × 200 chars; openPoints ≤ 6 × 200 chars, no ✅ entry (what is done leaves this file); whole file ≤ 8 KB. Replace fields, never append a report to them. Public repository: nothing private here (client projects, private plugins). Detail: adr skill.",
-  "snapshot": "2026-10-12",
+  "snapshot": "2026-10-13",
   "latestVersion": "1.0.0",
   "adrs": [
     {
@@ -21,7 +21,7 @@
       "status": "active",
       "statusLabel": "🟦 Step 04 · gateway pilot",
       "openStep": "docs/adr-002/steps/04-gateway-pilot.md",
-      "nextAction": "Move the gateway's draft PR to kuzzle-prometheus@1.0.0 and out of draft, then close step 04 (drop its minimumReleaseAgeExclude entry from 2026-10-19).",
+      "nextAction": "From 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude in a follow-up PR (gateway#21 merged on 1.0.0), then close step 04.",
       "blockers": [],
       "openPoints": [
         "Step 06: always create the plugin, stable access to metrics even when disabled; no instance prefix, kiotp_* for the platform.",
