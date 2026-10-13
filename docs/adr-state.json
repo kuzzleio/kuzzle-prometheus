@@ -25,7 +25,7 @@
       "blockers": [],
       "openPoints": [
         "Step 06: always create the plugin, stable access to metrics even when disabled; no instance prefix, kiotp_* for the platform.",
-        "Step 05: customer backends' labels: platform values under other names (cluster / namespace), agreed; to apply in the PaaS project template, with service injected (#10)."
+        "Step 05 (PaaS, #10): only the console is collected; pod discovery, customer backends' labels (cluster / namespace, service injected) and alert rules not started."
       ]
     }
   ]
