@@ -61,6 +61,7 @@ State observed on 2026-10-06:
 - 2026-10-09: `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (decision 8); its ADRs, integration guide and demo stack moved here.
 - Step 04 open: pilot on the HTTP/TCP gateway, ingestor and worker validated end to end on the beta; migration merged on the gateway's `main` on `kuzzle-prometheus@1.0.0` (kuzzleio/gateway#21, 2026-10-13), its `minimumReleaseAgeExclude` entry still in place.
 - The PaaS console's API validated `kuzzle-prometheus/kuzzle@1.0.0-beta.3` on staging (2 pods): no blocker for 1.0.0. Its feedback is documented (labels the platform also sets, `le` normalised to a float); `core.nodeIdLabel: false` leaves `nodeId` out (#16, `1.0.0-beta.4`), validated by the console on staging (2 pods). The console runs `1.0.0` in production since 2026-10-12 and sets the common labels itself (no relabelling of its scrape); customer backends' labels are still open on the PaaS side.
+- Step 05 on the PaaS side (2026-10-13): only the console's API is collected. Pod discovery for customer backends and Node services, their common labels (`service` not injected yet) and the alert rules are not started; thresholds wait for a week of production data on the new buckets (not before 2026-10-19).
 - **Next action:** from 2026-10-19 (pnpm's 7 days), drop `kuzzle-prometheus` from the gateway's `minimumReleaseAgeExclude` in a follow-up PR, then close step 04.
 
 ## Steps
@@ -104,6 +105,7 @@ Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so t
 - 2026-10-09 — The real-application test of the Kuzzle plugin moves to the IoT platform (step 06 imports `kuzzle-prometheus/kuzzle`).
 - 2026-10-09 — The PaaS console's API tests the Kuzzle plugin first (supersedes the line above for the 1.0.0 gate): it already runs Kuzzle 2.59 on Node 24, the IoT platform does not yet.
 - 2026-10-09 — Step 05 is carried out by the PaaS team (Alloy scrape, metric filter, scraping role, alert rules); this ADR keeps the row and #10.
+- 2026-10-09 — Step 05, scraper access: a dedicated Kuzzle user whose role allows only `prometheus:metrics`, authenticated by an API key as a bearer token; anonymous access to `GET /_/metrics` stays closed (as recommended in `docs/kuzzle-stack.md`).
 - 2026-10-09 — Step 06: the IoT platform always creates the plugin and gives its modules and the customer's code stable access to `metrics`, even when `plugins.prometheus.enabled` is `false` (declarations then work, nothing is exposed).
 - 2026-10-09 — Step 06: no prefix on the IoT platform's instance; metrics carry full names, `kiotp_*` for the platform, the customer's own prefix for project code. No `scope()` API unless the convention falls short.
 - 2026-10-09 — A library never calls `createMetrics()`: it receives the host's `Metrics` (a service's `createMetrics()`, a Kuzzle application's `plugin.metrics`). To document when the first shared library needs it.
