@@ -116,6 +116,7 @@ Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so t
 - 2026-10-12 — Common labels on the PaaS console's scrape: the plugin sets `service` / `environment` / `project`, Alloy no longer relabels them (settles the 2026-10-09 question for the console; customer backends still open, #10) ([step 04](steps/04-gateway-pilot.md)).
 - 2026-10-14 — Step 06 starts before step 05 closes: the IoT platform's PR stays a draft until customer backends are collected ([step 06](steps/06-iot-platform-default.md)).
 - 2026-10-14 — Step 06: access to `metrics` by application (`getMetrics(app)`, `Module.metrics`); the backend's `kuzzle` peer dependency moves to `>=2.59.0` ([step 06](steps/06-iot-platform-default.md)).
+- 2026-10-14 — One prefix per producer, refining the 2026-10-09 line ("the customer's own prefix"): `kiotp_` (IoT platform), `hyp_` (Hypervision), `app_` fixed and shared by every project, `console_` if the PaaS console ever declares some; `kuzzle_`, `nodejs_`, `process_` reserved. Enforced by convention and one guard test per product; still no `scope()` ([step 06](steps/06-iot-platform-default.md)).
 
 ## Open points
 

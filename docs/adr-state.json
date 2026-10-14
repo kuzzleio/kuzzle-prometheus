@@ -25,8 +25,9 @@
       "blockers": [],
       "openPoints": [
         "Step 04 still open: from 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude (follow-up PR), then close step 04.",
-        "Step 06: templates to Kuzzle 2.59 + kuzzle-prometheus/kuzzle (#12); console-injected labels to check on a customer backend.",
-        "Step 05 (PaaS, #10): only the console is collected; pod discovery, customer backends' labels (cluster / namespace, service injected) and alert rules not started."
+        "Step 06: templates (#12; template-kiotp-project in its v4 migration, with the app_ convention); console-injected labels to check on a customer backend.",
+        "Step 05 (PaaS, #10): only the console is collected; pod discovery, customer backends' labels (cluster / namespace, service injected) and alert rules not started.",
+        "Naming: kiotp_ / hyp_ / app_ per producer; reopen scope(prefix) when hyp_ meets kiotp_, a shared library declares metrics, or review misses a prefix."
       ]
     }
   ]
