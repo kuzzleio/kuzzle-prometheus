@@ -1,6 +1,6 @@
 {
   "$comment": "CURRENT STATE of the ADR efforts, never their history: the hubs under docs/adr-<n>/ carry the narrative, this file is only their structured extract. It feeds the digest injected at every Claude Code session start (.claude/settings.json → `node .ci/scripts/adr-state.mts --digest`). Schema checked in CI (`--check`): status ∈ proposed | accepted | active | closed | abandoned; nextAction = ONE imperative action ≤ 300 chars, never what was just done; blockers ≤ 4 × 200 chars; openPoints ≤ 6 × 200 chars, no ✅ entry (what is done leaves this file); whole file ≤ 8 KB. Replace fields, never append a report to them. Public repository: nothing private here (client projects, private plugins). Detail: adr skill.",
-  "snapshot": "2026-10-13",
+  "snapshot": "2026-10-14",
   "latestVersion": "1.0.0",
   "adrs": [
     {
@@ -19,12 +19,13 @@
       "hub": "docs/adr-002/ADR-0002-generic-prometheus-module.md",
       "title": "Generic Prometheus module, and the Kuzzle plugin built on it",
       "status": "active",
-      "statusLabel": "🟦 Step 04 · gateway pilot",
-      "openStep": "docs/adr-002/steps/04-gateway-pilot.md",
-      "nextAction": "From 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude in a follow-up PR (gateway#21 merged on 1.0.0), then close step 04.",
+      "statusLabel": "🟦 Step 06 · IoT platform default",
+      "openStep": "docs/adr-002/steps/06-iot-platform-default.md",
+      "nextAction": "Get iot-platform#1100's CI green (functional scrape scenario), then keep it as a draft until step 05 collects customer backends.",
       "blockers": [],
       "openPoints": [
-        "Step 06: always create the plugin, stable access to metrics even when disabled; no instance prefix, kiotp_* for the platform.",
+        "Step 04 still open: from 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude (follow-up PR), then close step 04.",
+        "Step 06: templates to Kuzzle 2.59 + kuzzle-prometheus/kuzzle (#12); console-injected labels to check on a customer backend.",
         "Step 05 (PaaS, #10): only the console is collected; pod discovery, customer backends' labels (cluster / namespace, service injected) and alert rules not started."
       ]
     }
