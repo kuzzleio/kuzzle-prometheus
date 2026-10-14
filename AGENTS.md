@@ -37,6 +37,7 @@ Functional tests run Kuzzle from `src/` (`tests/functional/app/`, through `tsx`)
 - **TypeScript `strict`**, CommonJS output. No `any` in the public API.
 - **The public API is what `src/index.ts` and `src/kuzzle/index.ts` export.** A change to it is a `feat` (addition) or a breaking change (`feat!` / `BREAKING CHANGE:`), and updates the docs in the same commit.
 - **Docs ship with the package** (`docs/` is in `files`). A behaviour change updates `docs/` and, when it changes a rule an integrating agent must follow, `docs/agents.md`.
+- **Two documentations.** `docs/` is the repository's and the agents' documentation (shipped in the package); `doc/1/` is the user documentation published on docs.kuzzle.io (`/modules/prometheus/1/`, `kuzzle-doc` skill: frontmatter, absolute links), not shipped. A user-visible change updates both.
 - **Metric names and labels are a contract**: dashboards and alerts depend on them. Renaming one is a breaking change. The label *order* in the text output is not (Prometheus identifies a series by its label set): tests that care about labels use the order-independent `sample()` helper rather than an exact line.
 - **Tests**: every public function has unit tests under `tests/unit/`; assert on the rendered Prometheus text, not on library internals.
 - **Commits**: Conventional Commits, English. semantic-release derives versions from them: `chore` / `docs` / `test` do not release, `fix` → patch, `feat` → minor.
