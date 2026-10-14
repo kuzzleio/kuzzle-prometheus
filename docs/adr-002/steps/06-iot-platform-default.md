@@ -21,12 +21,15 @@
 - 2026-10-14 — iot-platform#1100: `kuzzle-prometheus@^1.0.0` in `@kuzzleio/iot-platform-backend`; `registerKIoTP()` creates the plugin and loads it unless it is disabled; `getMetrics(app)` and a `metrics` getter on `Module`; the `Metrics` types re-exported; how-to `doc/4/guides/how-to/expose-metrics/`; unit tests (accessor, opt-out) and a scenario (scrape with a token, anonymous refused).
 
 - 2026-10-14 — Naming settled before #1100 leaves draft (below): guard test on the prefixes in #1100's scrape scenario, JSDoc and how-to on `app_`; kuzzle-prometheus#28 documents hosts whose instance has no prefix.
+- 2026-10-14 — #12 done: `template-kuzzle-project` on Kuzzle 2.59 and `kuzzle-prometheus/kuzzle` (template-kuzzle-project#9).
+- 2026-10-14 — iot-platform#1100: `loadPrometheusPlugin()` loads the plugin and imports the `prometheus-scraper` role and profile unless it is disabled; unit tests (imported, not when disabled), scenario (scrape with a `prometheus-scraper` user's API key, 403 on any other action), how-to (`kourou` commands for the user and its key). CI green. Proposal posted on #10.
 
 ## Local decisions / gotchas
 
 - **Access by application, not a global:** a `WeakMap<Backend, PrometheusPlugin>` filled by `registerKIoTP()`. `getMetrics(app)` throws before it, so a declaration made too early fails at startup rather than going to an instance nobody exposes.
 - **The backend's `kuzzle` peer dependency becomes `>=2.59.0 <3.0.0`:** the plugin requires 2.59. Applications built on the backend (Hypervision) must be on 2.59 before they take this version.
-- **Scraper access as on the console:** a user whose role allows only `prometheus:metrics`, authenticated by an API key (#10); the how-to documents it, and `anonymous` keeps no access.
+- **Scraper access as on the console:** a user whose role allows only `prometheus:metrics`, authenticated by an API key (#10); `anonymous` keeps no access.
+- **The platform declares the scraper's role and profile** (`prometheus-scraper`, only `prometheus:metrics`) through `app.import`, like its other roles, only when the plugin is loaded. The PaaS creates the user and its API key: a secret of each environment, held by Alloy. Why: the platform loads the plugin, so it brings the access to it; every customer backend and Hypervision inherits it, and no template carries it. Rejected: the templates (one copy per template, drifting), the PaaS provisioning the role too (two sources of truth), the plugin itself (it has no `app.import`, and creating security objects at runtime is invasive). `template-kuzzle-project`, which does not use the platform, would carry the same few lines if a backend from it is collected; a `scraperRole` export from `kuzzle-prometheus/kuzzle` only if a second such consumer appears.
 - **One prefix per producer** (refines the 2026-10-09 register line):
 
   | Producer | Prefix | Guard |
@@ -46,7 +49,8 @@
 ## Validation
 
 - [x] Unit tests and types of the backend pass locally (iot-platform#1100).
-- [ ] iot-platform#1100 CI (functional scenario on a real Kuzzle).
+- [x] iot-platform#1100 CI (functional scenario on a real Kuzzle), scraper role included.
 - [ ] Step 05 collects customer backends; #1100 out of draft and merged.
 - [ ] Console-injected labels checked on a customer backend.
-- [ ] Templates: `template-kuzzle-project` (#12); `template-kiotp-project` in its v4 migration, once a published backend contains #1100 (otherwise a follow-up PR): the `app_` convention, an example in a module, the `plugins.prometheus.enabled: false` opt-out. `template-hypervision-project` follows once on a Hypervision version that contains #1100.
+- [x] `template-kuzzle-project` on Kuzzle 2.59 and the plugin (#12).
+- [ ] Templates: `template-kiotp-project` in its v4 migration, once a published backend contains #1100 (otherwise a follow-up PR): the `app_` convention, an example in a module, the `plugins.prometheus.enabled: false` opt-out (the scraper's role comes from the platform). `template-hypervision-project` follows once on a Hypervision version that contains #1100.

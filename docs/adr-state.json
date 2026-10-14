@@ -21,11 +21,11 @@
       "status": "active",
       "statusLabel": "🟦 Step 06 · IoT platform default",
       "openStep": "docs/adr-002/steps/06-iot-platform-default.md",
-      "nextAction": "Get iot-platform#1100's CI green (functional scrape scenario), then keep it as a draft until step 05 collects customer backends.",
+      "nextAction": "Get the PaaS's answer on #10 (names it expects, a first customer backend for pod discovery), then keep iot-platform#1100 a draft until step 05 collects customer backends.",
       "blockers": [],
       "openPoints": [
         "Step 04 still open: from 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude (follow-up PR), then close step 04.",
-        "Step 06: templates (#12; template-kiotp-project in its v4 migration, with the app_ convention); console-injected labels to check on a customer backend.",
+        "Step 06: template-kiotp-project gets the metrics in its v4 migration (app_ convention, opt-out); console-injected labels to check on a customer backend.",
         "Step 05 (PaaS, #10): only the console is collected; pod discovery, customer backends' labels (cluster / namespace, service injected) and alert rules not started.",
         "Naming: kiotp_ / hyp_ / app_ per producer; reopen scope(prefix) when hyp_ meets kiotp_, a shared library declares metrics, or review misses a prefix."
       ]
