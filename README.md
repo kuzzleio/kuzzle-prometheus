@@ -41,7 +41,7 @@ http.createServer(metrics.handler).listen(9464);
 | [Troubleshooting](docs/troubleshooting.md) | symptoms, causes and fixes |
 | [For AI agents](docs/agents.md) | rules an agent follows when it adds metrics to an application |
 
-The documentation ships in the npm package: `node_modules/kuzzle-prometheus/docs/`.
+The documentation ships in the npm package: `node_modules/kuzzle-prometheus/docs/`. The user documentation is also published on [docs.kuzzle.io](https://docs.kuzzle.io/modules/prometheus/1/) (source: `doc/1/`).
 
 `kuzzle-prometheus/kuzzle` replaces the deprecated [`kuzzle-plugin-prometheus`](https://www.npmjs.com/package/kuzzle-plugin-prometheus): same metrics, routes and configuration.
 

@@ -72,3 +72,21 @@ jobs:
           SEMANTIC_RELEASE_NPM_PUBLISH: "true"
           SEMANTIC_RELEASE_SLACK_WEBHOOK: ${{ secrets.SEMANTIC_RELEASE_SLACK_WEBHOOK }}
         run: npx semantic-release
+
+  # Rebuilds the user documentation (doc/1/) on docs.kuzzle.io: master is
+  # deployed to production, <N>-dev to next-docs.kuzzle.io (staging). The
+  # section is registered in kuzzleio/documentation (repositories.json,
+  # sections.json) as kuzzle-prometheus, version 1.
+  documentation:
+    name: Documentation - Deploy
+    runs-on: ubuntu-24.04
+    needs: [release]
+    steps:
+      - uses: convictional/trigger-workflow-and-wait@f69fa9eedd3c62a599220f4d5745230e237904be # v1.6.5
+        with:
+          owner: kuzzleio
+          repo: documentation
+          github_token: ${{ secrets.ACCESS_TOKEN_CI }}
+          workflow_file_name: child_repo.workflow.yml
+          ref: ${{ github.ref_name == 'master' && 'master' || 'develop' }}
+          client_payload: '{"repo_name":"kuzzle-prometheus","branch":"${{ github.ref_name }}","version":"1"}'
