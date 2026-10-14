@@ -64,7 +64,7 @@ State observed on 2026-10-06:
 - Step 05 on the PaaS side (2026-10-13): only the console's API is collected. Pod discovery for customer backends and Node services, their common labels (`service` not injected yet) and the alert rules are not started; thresholds wait for a week of production data on the new buckets (not before 2026-10-19).
 - Step 06 open (2026-10-14), ahead of step 05: the IoT platform is on Kuzzle 2.59 (iot-platform#1092); iot-platform#1100 loads the plugin by default and declares the scraper's role and profile (`prometheus-scraper`), CI green, a draft until step 05 collects customer backends. `template-kuzzle-project` is on 2.59 with the plugin (#12).
 - Step 04's last action: from 2026-10-19 (pnpm's 7 days), drop `kuzzle-prometheus` from the gateway's `minimumReleaseAgeExclude` in a follow-up PR, then close step 04.
-- **Next action:** get the PaaS's answer on #10 (names it expects, a first customer backend for pod discovery), then keep iot-platform#1100 a draft until step 05 collects customer backends.
+- **Next action:** choose the pilot customer backend (from `template-kuzzle-project`, recommended by the PaaS) and give it the `prometheus-scraper` role; keep iot-platform#1100 a draft until step 05 collects customer backends.
 
 ## Steps
 
