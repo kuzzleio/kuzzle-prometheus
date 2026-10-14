@@ -51,6 +51,7 @@ Never add `project`, `environment` or `service` to `labelNames`: they are common
 ## Names
 
 - `snake_case`, without the service name or the prefix (the instance adds the prefix).
+- Exception: a host whose instance has no prefix, such as the Kuzzle IoT Platform (`getMetrics(app)`, `Module.metrics`). Declare the full name, with the prefix the host gives your code: `app_` for project code there. Never use another producer's prefix (`kiotp_`, `kuzzle_`, `nodejs_`, `process_`).
 - Do not rename an existing metric: dashboards and alert rules depend on it. Add a new one instead, and say so in the change description.
 - Kuzzle backends: do not redeclare what the plugin already measures (API request duration and status, connections, realtime rooms; see [Kuzzle metrics reference](kuzzle-metrics.md)).
 
