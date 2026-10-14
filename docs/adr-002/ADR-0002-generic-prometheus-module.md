@@ -61,10 +61,10 @@ State observed on 2026-10-06:
 - 2026-10-09: `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (decision 8); its ADRs, integration guide and demo stack moved here.
 - Step 04 open: pilot on the HTTP/TCP gateway, ingestor and worker validated end to end on the beta; migration merged on the gateway's `main` on `kuzzle-prometheus@1.0.0` (kuzzleio/gateway#21, 2026-10-13), its `minimumReleaseAgeExclude` entry still in place.
 - The PaaS console's API validated `kuzzle-prometheus/kuzzle@1.0.0-beta.3` on staging (2 pods): no blocker for 1.0.0. Its feedback is documented (labels the platform also sets, `le` normalised to a float); `core.nodeIdLabel: false` leaves `nodeId` out (#16, `1.0.0-beta.4`), validated by the console on staging (2 pods). The console runs `1.0.0` in production since 2026-10-12 and sets the common labels itself (no relabelling of its scrape); customer backends' labels are still open on the PaaS side.
-- Step 05 on the PaaS side (2026-10-13): only the console's API is collected. Pod discovery for customer backends and Node services, their common labels (`service` not injected yet) and the alert rules are not started; thresholds wait for a week of production data on the new buckets (not before 2026-10-19).
-- Step 06 open (2026-10-14), ahead of step 05: the IoT platform is on Kuzzle 2.59 (iot-platform#1092); iot-platform#1100 loads the plugin by default and declares the scraper's role and profile (`prometheus-scraper`), CI green, a draft until step 05 collects customer backends. `template-kuzzle-project` is on 2.59 with the plugin (#12).
+- Step 05 on the PaaS side: only the console's API is collected. Customer backends will be collected through a `PodMonitor` and a `Secret` (its API key) in each backend's namespace, discovered by one Alloy (accepted 2026-10-14; the Prometheus Operator CRDs to install first). Common labels (`service` not injected yet) and alert rules not started; thresholds not before 2026-10-19.
+- Step 06 open (2026-10-14), ahead of step 05: the IoT platform is on Kuzzle 2.59 (iot-platform#1092); iot-platform#1100 loads the plugin by default and declares the scraper's role and profile (`prometheus-scraper`), CI green, a draft until step 05 collects customer backends. `template-kuzzle-project` is on 2.59 with the plugin (#12) and is the pilot: template-kuzzle-project#10 adds the same role.
 - Step 04's last action: from 2026-10-19 (pnpm's 7 days), drop `kuzzle-prometheus` from the gateway's `minimumReleaseAgeExclude` in a follow-up PR, then close step 04.
-- **Next action:** choose the pilot customer backend (from `template-kuzzle-project`, recommended by the PaaS) and give it the `prometheus-scraper` role; keep iot-platform#1100 a draft until step 05 collects customer backends.
+- **Next action:** merge template-kuzzle-project#10 once its CI is green, then deploy a pilot backend from it for the PaaS to collect (PodMonitor + Secret); keep iot-platform#1100 a draft until then.
 
 ## Steps
 
@@ -118,6 +118,7 @@ Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so t
 - 2026-10-14 — Step 06: access to `metrics` by application (`getMetrics(app)`, `Module.metrics`); the backend's `kuzzle` peer dependency moves to `>=2.59.0` ([step 06](steps/06-iot-platform-default.md)).
 - 2026-10-14 — One prefix per producer, refining the 2026-10-09 line ("the customer's own prefix"): `kiotp_` (IoT platform), `hyp_` (Hypervision), `app_` fixed and shared by every project, `console_` if the PaaS console ever declares some; `kuzzle_`, `nodejs_`, `process_` reserved. Enforced by convention and one guard test per product; still no `scope()` ([step 06](steps/06-iot-platform-default.md)).
 - 2026-10-14 — The IoT platform declares the scraper's role and profile `prometheus-scraper` (only `prometheus:metrics`) when it loads the plugin; the PaaS creates the user and its API key. Not in the templates, not in the plugin ([step 06](steps/06-iot-platform-default.md)).
+- 2026-10-14 — Customer backends are collected through a `PodMonitor` and a `Secret` per backend namespace (one API key per backend), not a central scrape configuration; a dedicated unauthenticated port and `anonymous` scrapes rejected. Pilot on every project template, `template-kuzzle-project` first ([step 06](steps/06-iot-platform-default.md)).
 
 ## Open points
 

@@ -154,6 +154,8 @@ spec:
           key: token
 ```
 
+With several backends, each needs its own key: a Kuzzle signs its API keys with its own secret, and its users live in its own database. Put one `PodMonitor` and the `Secret` holding its key in each backend's namespace, rather than listing every backend in a central scrape configuration: Grafana Alloy discovers them with `prometheus.operator.podmonitors` (only the Prometheus Operator's CRDs are needed, not the operator). The key can only be created once the backend runs a version that declares the scraper's role: ship the `PodMonitor` once its `Secret` exists, so that a new backend does not show up as down.
+
 Set the `project` and `environment` labels in the deployment, so that one dashboard or alert rule works across stacks:
 
 ```yaml
