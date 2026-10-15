@@ -93,6 +93,7 @@ The `plugins.prometheus` section of Kuzzle's configuration, read once at startup
         "gcDurationBuckets": [0.001, 0.01, 0.1, 1, 2, 5]
       },
       "labels": {
+        "service": "kuzzle",
         "project": "acme",
         "environment": "production"
       }
@@ -129,6 +130,19 @@ Every metric of the node carries:
 - `nodeId`: the Kuzzle node ID, new at each restart (unless `core.nodeIdLabel` is `false`);
 - the common labels `project`, `environment`, `service` (see [Configuration](configuration.md#common-labels)), from `labels` or from the `KUZZLE_PROMETHEUS_*` environment variables, `labels` winning;
 - every other pair of `labels`.
+
+**Who sets them.** The plugin's constructor takes no label: in a Kuzzle backend, the deployment sets the three common labels, through `kuzzle_plugins__prometheus__labels__*` variables (or `labels` in the `.kuzzlerc` of each environment):
+
+- `service`: `kuzzle`, for every Kuzzle backend. The program is Kuzzle; `project` tells the backends apart.
+- `project` and `environment`: the backend and its environment.
+
+```sh
+kuzzle_plugins__prometheus__labels__service=kuzzle
+kuzzle_plugins__prometheus__labels__project=acme
+kuzzle_plugins__prometheus__labels__environment=production
+```
+
+When several sources give a label, a `kuzzle_plugins__prometheus__labels__*` variable wins over the `.kuzzlerc` file, which wins over `KUZZLE_PROMETHEUS_*`.
 
 Keep `labels` values fixed for the life of the process, and do not use `nodeId`, `protocol`, `controller`, `action` or `status` as label names: the plugin uses them.
 

@@ -25,6 +25,8 @@
 - 2026-10-14 — iot-platform#1100: `loadPrometheusPlugin()` loads the plugin and imports the `prometheus-scraper` role and profile unless it is disabled; unit tests (imported, not when disabled), scenario (scrape with a `prometheus-scraper` user's API key, 403 on any other action), how-to (`kourou` commands for the user and its key). CI green. Proposal posted on #10; the PaaS accepts the names ([answer](https://github.com/kuzzleio/kuzzle-prometheus/issues/10#issuecomment-6178379257)).
 - 2026-10-14 — Pilot: every project template, `template-kuzzle-project` first. template-kuzzle-project#10: `MetricsModule` imports the same `prometheus-scraper` role and profile; README section; unit and functional tests.
 - 2026-10-14 — `docs/kuzzle-stack.md` and `doc/1/`: one key per backend, one `PodMonitor` and its `Secret` per backend namespace.
+- 2026-10-15 — kuzzle-prometheus#29 and template-kuzzle-project#10 merged. The template releases on the console's dispatch, not on merge: the pilot is a new KuzzleES8 app (chart `paas-kuzzle-es8` 1.6.0, `PodMonitor` off until the console writes the `Secret` `kuzzle-metrics-scraper`, Alloy reads only PodMonitors labelled `paas.kuzzle.io/metrics=kuzzle`).
+- 2026-10-15 — `service` label: the console sets `service=kuzzle` on every Kuzzle backend (its ADR-0007); `docs/kuzzle.md`, `docs/agents.md` and `doc/1/` say who sets which common label in a Kuzzle backend, and the precedence.
 
 ## Local decisions / gotchas
 

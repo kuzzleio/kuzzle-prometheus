@@ -113,6 +113,19 @@ Every metric of the node carries:
 - the common labels `project`, `environment`, `service`, from `labels` or from the `KUZZLE_PROMETHEUS_*` environment variables, `labels` winning (see [Common labels](/modules/prometheus/1/api/types/metrics-options#common-labels));
 - every other pair of `labels`.
 
+**Who sets them.** The plugin's constructor takes no label: in a Kuzzle backend, the deployment sets the three common labels, through `kuzzle_plugins__prometheus__labels__*` variables (or `labels` in the `.kuzzlerc` of each environment):
+
+- `service`: `kuzzle`, for every Kuzzle backend. The program is Kuzzle; `project` tells the backends apart.
+- `project` and `environment`: the backend and its environment.
+
+```bash
+kuzzle_plugins__prometheus__labels__service=kuzzle
+kuzzle_plugins__prometheus__labels__project=acme
+kuzzle_plugins__prometheus__labels__environment=production
+```
+
+When several sources give a label, a `kuzzle_plugins__prometheus__labels__*` variable wins over the `.kuzzlerc` file, which wins over `KUZZLE_PROMETHEUS_*`.
+
 Keep `labels` values fixed for the life of the process, and do not use `nodeId`, `protocol`, `controller`, `action` or `status` as label names: the plugin uses them.
 
 ## Going further

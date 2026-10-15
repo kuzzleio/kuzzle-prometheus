@@ -32,7 +32,7 @@ One of the metric's labels takes unbounded values (an ID, a URL, free text): new
 
 ### `project`, `environment` or `service` is missing
 
-The label has no value: set the option, or the `KUZZLE_PROMETHEUS_*` variable in the deployment (in a Kuzzle backend, also `labels`). See [Common labels](/modules/prometheus/1/api/types/metrics-options#common-labels).
+The label has no value: set the option, or the `KUZZLE_PROMETHEUS_*` variable in the deployment (in a Kuzzle backend, `kuzzle_plugins__prometheus__labels__*` or `labels`, `service` being `kuzzle`). See [Common labels](/modules/prometheus/1/api/types/metrics-options#common-labels) and [Kuzzle plugin → Labels](/modules/prometheus/1/guides/kuzzle-plugin#labels).
 
 ### `environment` or `service` has another value, or `exported_environment` appears
 
