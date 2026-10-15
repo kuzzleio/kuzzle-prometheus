@@ -60,8 +60,8 @@
 
 - [x] Unit tests and types of the backend pass locally (iot-platform#1100).
 - [x] iot-platform#1100 CI (functional scenario on a real Kuzzle), scraper role included.
-- [ ] Step 05 collects customer backends; #1100 out of draft and merged.
-- [ ] Console-injected labels checked on a customer backend.
+- [ ] Step 05 collects customer backends (done 2026-10-15); #1100 out of draft (done) and merged.
+- [x] Console-injected labels checked on a customer backend (pilot, 2026-10-15).
 - [x] `template-kuzzle-project` on Kuzzle 2.59 and the plugin (#12).
-- [ ] Pilot: template-kuzzle-project#10 merged; a backend from it collected by the PaaS.
+- [x] Pilot: template-kuzzle-project#10 merged; a backend from it collected by the PaaS.
 - [ ] Templates: `template-kiotp-project` in its v4 migration, once a published backend contains #1100 (otherwise a follow-up PR): the `app_` convention, an example in a module, the `plugins.prometheus.enabled: false` opt-out (the scraper's role comes from the platform). `template-hypervision-project` follows once on a Hypervision version that contains #1100.

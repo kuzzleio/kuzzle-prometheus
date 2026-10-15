@@ -1,6 +1,6 @@
 {
   "$comment": "CURRENT STATE of the ADR efforts, never their history: the hubs under docs/adr-<n>/ carry the narrative, this file is only their structured extract. It feeds the digest injected at every Claude Code session start (.claude/settings.json → `node .ci/scripts/adr-state.mts --digest`). Schema checked in CI (`--check`): status ∈ proposed | accepted | active | closed | abandoned; nextAction = ONE imperative action ≤ 300 chars, never what was just done; blockers ≤ 4 × 200 chars; openPoints ≤ 6 × 200 chars, no ✅ entry (what is done leaves this file); whole file ≤ 8 KB. Replace fields, never append a report to them. Public repository: nothing private here (client projects, private plugins). Detail: adr skill.",
-  "snapshot": "2026-10-14",
+  "snapshot": "2026-10-15",
   "latestVersion": "1.0.0",
   "adrs": [
     {
@@ -21,12 +21,12 @@
       "status": "active",
       "statusLabel": "🟦 Step 06 · IoT platform default",
       "openStep": "docs/adr-002/steps/06-iot-platform-default.md",
-      "nextAction": "The PaaS deploys a pilot backend from template-kuzzle-project (a new KuzzleES8 app, release dispatched by the console) and collects it (PodMonitor + Secret); then iot-platform#1100 leaves draft.",
+      "nextAction": "Get iot-platform#1100 reviewed and merged, then bring the metrics to template-kiotp-project in its v4 migration.",
       "blockers": [],
       "openPoints": [
         "Step 04 still open: from 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude (follow-up PR), then close step 04.",
-        "Step 06: pilot on every project template (template-kuzzle-project first, then template-kiotp-project in its v4 migration, template-hypervision-project); console-injected labels to check.",
-        "Step 05 (PaaS, #10): customer backends via PodMonitor + Secret per namespace (Prometheus Operator CRDs to install first); service label and alert rules not started.",
+        "Step 06: template-kiotp-project (v4 migration) and template-hypervision-project still to do; the console does not yet set core.nodeIdLabel false on customer backends (PaaS fix).",
+        "Step 05 (PaaS, #10): customer backends collected (PodMonitor + Secret); project/environment relabelings on the PodMonitor so that up carries them (PaaS); alert rules not started.",
         "Naming: kiotp_ / hyp_ / app_ per producer; reopen scope(prefix) when hyp_ meets kiotp_, a shared library declares metrics, or review misses a prefix."
       ]
     }
