@@ -21,7 +21,7 @@
       "status": "active",
       "statusLabel": "🟦 Step 06 · IoT platform default",
       "openStep": "docs/adr-002/steps/06-iot-platform-default.md",
-      "nextAction": "Merge template-kuzzle-project#10 once its CI is green, then deploy a pilot backend from it for the PaaS to collect (PodMonitor + Secret); keep iot-platform#1100 a draft until then.",
+      "nextAction": "The PaaS deploys a pilot backend from template-kuzzle-project (a new KuzzleES8 app, release dispatched by the console) and collects it (PodMonitor + Secret); then iot-platform#1100 leaves draft.",
       "blockers": [],
       "openPoints": [
         "Step 04 still open: from 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude (follow-up PR), then close step 04.",

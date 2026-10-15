@@ -86,6 +86,25 @@ Keep only the line of the route you scrape, if you prefer. Then either:
 
   The key is `result._source.token` in the last response; Kuzzle shows it only once. See Kuzzle's [API keys guide](https://docs.kuzzle.io/core/2/guides/advanced/api-keys/).
 
+- **When the collector has no admin access** (a hosting platform that deploys the backends but holds no admin account on them): the application declares the scraper's access itself, at startup, and the collector manages its own key.
+  - The role also allows `auth:createApiKey` and `auth:deleteApiKey`: a user can only create or delete its own keys.
+  - The application imports the user (`app.import.users`, local strategy) with a password the deployment provides, and only when it is set:
+
+    ```ts
+    const password = process.env.KUZZLE_PROMETHEUS_SCRAPER_PASSWORD;
+    if (password) {
+      app.import.users({
+        "prometheus-scraper": {
+          content: { profileIds: ["prometheus-scraper"] },
+          credentials: { local: { username: "prometheus-scraper", password } },
+        },
+      });
+    }
+    ```
+
+  - After each deploy, the collector checks its key (`auth:checkToken`). If it is not valid, it logs in as `prometheus-scraper` (`auth:login`), deletes the key by its fixed id (`auth:deleteApiKey`, a 404 is fine) and creates it again with that id (`auth:createApiKey`, `_id` set, never expires by default).
+  - The user is created once: Kuzzle skips an existing user, so changing the password later does not change it (change it with an admin account). Never import it with `onExistingUsers: "overwrite"`: that recreates the user, which deletes its API keys.
+
 Without the right, Kuzzle answers `401` to an anonymous scrape and `403` to an authenticated one.
 
 ## 4. Point Prometheus at every node
@@ -164,12 +183,14 @@ spec:
           key: token
 ```
 
-With several backends, each needs its own key: a Kuzzle signs its API keys with its own secret, and its users live in its own database. Put one `PodMonitor` and the `Secret` holding its key in each backend's namespace, rather than listing every backend in a central scrape configuration: Grafana Alloy discovers them with `prometheus.operator.podmonitors` (only the Prometheus Operator's CRDs are needed, not the operator). The key can only be created once the backend runs a version that declares the scraper's role: ship the `PodMonitor` once its `Secret` exists, so that a new backend does not show up as down.
+With several backends, each needs its own key: a Kuzzle signs its API keys with its own secret, and its users live in its own database. Put one `PodMonitor` and the `Secret` holding its key next to each backend, in its namespace (one pair per backend when several share a namespace), rather than listing every backend in a central scrape configuration: Grafana Alloy discovers them with `prometheus.operator.podmonitors` (only the Prometheus Operator's CRDs are needed, not the operator). The key can only be created once the backend runs a version that declares the scraper's access: ship the `PodMonitor` once its `Secret` exists, so that a new backend does not show up as down.
 
-Set the `project` and `environment` labels in the deployment, so that one dashboard or alert rule works across stacks:
+Set the common labels in the deployment, so that one dashboard or alert rule works across stacks; `service` is `kuzzle` for every Kuzzle backend:
 
 ```yaml
 env:
+  - name: kuzzle_plugins__prometheus__labels__service
+    value: kuzzle
   - name: kuzzle_plugins__prometheus__labels__project
     value: acme
   - name: kuzzle_plugins__prometheus__labels__environment

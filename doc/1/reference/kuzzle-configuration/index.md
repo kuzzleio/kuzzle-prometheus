@@ -27,6 +27,7 @@ The `plugins.prometheus` section of the Kuzzle configuration (`.kuzzlerc`), read
         "gcDurationBuckets": [0.001, 0.01, 0.1, 1, 2, 5]
       },
       "labels": {
+        "service": "kuzzle",
         "project": "acme",
         "environment": "production"
       }

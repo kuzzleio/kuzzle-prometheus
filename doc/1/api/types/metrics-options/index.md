@@ -39,7 +39,7 @@ In a Kuzzle application, the equivalent settings come from the [Kuzzle configura
 - A label with no value (neither option nor variable) is left out.
 - Values are fixed at `createMetrics` time.
 
-Set `service` in code: it names the program. Let the deployment set `project` and `environment` through the environment variables.
+Set `service` in code: it names the program. Let the deployment set `project` and `environment` through the environment variables. A Kuzzle backend is the exception: the deployment sets all three, see [Kuzzle plugin → Labels](/modules/prometheus/1/guides/kuzzle-plugin#labels).
 
 ### When the collection platform sets the same labels
 

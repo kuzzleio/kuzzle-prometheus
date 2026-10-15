@@ -48,6 +48,8 @@ If you need per-entity detail, it belongs in logs, not metrics. Past `maxLabelSe
 
 Never add `project`, `environment` or `service` to `labelNames`: they are common labels, added automatically (declaring them throws). If the platform that collects the metrics sets labels with these names, do not guess which value wins: ask, and see [Configuration → Common labels](configuration.md#common-labels).
 
+In a Kuzzle backend, do not set the common labels in the application code: the deployment sets them (`kuzzle_plugins__prometheus__labels__*`), and `service` is always `kuzzle`. See [Kuzzle plugin → Labels](kuzzle.md#labels).
+
 ## Names
 
 - `snake_case`, without the service name or the prefix (the instance adds the prefix).
