@@ -23,7 +23,7 @@
 - A label with no value (neither option nor variable) is left out.
 - Values are fixed at `createMetrics` time.
 
-Set `service` in code: it names the program. Let the deployment set `project` and `environment` through the environment variables.
+Set `service` in code: it names the program. Let the deployment set `project` and `environment` through the environment variables. A Kuzzle backend is the exception: the deployment sets all three, see [Kuzzle plugin → Labels](kuzzle.md#labels).
 
 **When the collection platform sets the same labels.** Many platforms add their own `environment` or `service` (a cluster, a namespace) to every series, and the two values mean different things. What happens then depends on where the platform sets them:
 

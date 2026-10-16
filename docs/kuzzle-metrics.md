@@ -40,6 +40,7 @@ Present only when `core.monitorRequestDuration` is `true` (the default).
 - **What is not counted**: URLs that match no API route (Kuzzle answers 404 before creating a request).
 - **Buckets** (`core.requestDurationBuckets`): `0.1`, `5`, `15`, `50`, `100`, `200`, `300`, `400`, `500` ms by default, and `+Inf`. Requests over the last bucket all fall in `+Inf`: a quantile above that value cannot be estimated. Add larger buckets if your requests often take longer.
 - The histogram exposes `kuzzle_api_request_duration_ms_bucket{le="…"}`, `_sum` and `_count`. `_count` is a request counter: use it for rates.
+- **`le` as stored**: Prometheus 3, Grafana Alloy and the backends they write to (Mimir, Grafana Cloud…) normalise `le` to a float, `500.0` for `500`. A query on one bucket matches both forms: `kuzzle_api_request_duration_ms_bucket{le=~"500(\\.0)?"}`.
 - **Cardinality**: one series set per controller × action × protocol × status actually used, times the number of buckets plus 3 (`+Inf`, `_sum` and `_count`): 12 with the defaults.
 
 ## Node.js metrics

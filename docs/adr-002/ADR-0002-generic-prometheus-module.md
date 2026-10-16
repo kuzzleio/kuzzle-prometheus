@@ -57,11 +57,14 @@ State observed on 2026-10-06:
 
 ## Cold start
 
-- Steps 01–03 done: the module and the Kuzzle plugin live in `kuzzle-prometheus` (`1.0.0-beta.4` on npm `beta`; npm `latest` is still the empty `0.0.0-bootstrap.0`).
+- Steps 01–03 done: the module and the Kuzzle plugin live in `kuzzle-prometheus` `1.0.0` released on npm `latest` on 2026-10-12 (#19), after 4 betas.
 - 2026-10-09: `kuzzle-plugin-prometheus` deprecated, 5.x unpublished (decision 8); its ADRs, integration guide and demo stack moved here.
-- Step 04 open: pilot on the HTTP/TCP gateway, migrated in a **draft** PR on its repository (kept as draft until the production versions), on `kuzzle-prometheus@1.0.0-beta.2`; ingestor and worker validated end to end on the beta.
-- The PaaS console's API validated `kuzzle-prometheus/kuzzle@1.0.0-beta.3` on staging (2 pods): no blocker for 1.0.0. Its feedback is documented (labels the platform also sets, `le` normalised to a float); `core.nodeIdLabel: false` leaves `nodeId` out (#16, `1.0.0-beta.4`), validated by the console on staging (2 pods).
-- **Next action:** release `kuzzle-prometheus` 1.0.0 (#8), then move the gateway's draft PR to it and close step 04.
+- Step 04 open: pilot on the HTTP/TCP gateway, ingestor and worker validated end to end on the beta; migration merged on the gateway's `main` on `kuzzle-prometheus@1.0.0` (kuzzleio/gateway#21, 2026-10-13), its `minimumReleaseAgeExclude` entry still in place.
+- The PaaS console's API validated `kuzzle-prometheus/kuzzle@1.0.0-beta.3` on staging (2 pods): no blocker for 1.0.0. Its feedback is documented (labels the platform also sets, `le` normalised to a float); `core.nodeIdLabel: false` leaves `nodeId` out (#16, `1.0.0-beta.4`), validated by the console on staging (2 pods). The console runs `1.0.0` in production since 2026-10-12 and sets the common labels itself (no relabelling of its scrape); customer backends' labels are still open on the PaaS side.
+- Step 05 on the PaaS side: the console's API and customer backends are collected (PodMonitor + `Secret` per backend, one Alloy; pilot backend from template-kuzzle-project collected on 2026-10-15). `project`/`environment` relabelings on the PodMonitor, `core.nodeIdLabel: false` on customer backends and alert rules are still to do on the PaaS side.
+- Step 06 open (2026-10-14): iot-platform#1100 (plugin loaded by default, `prometheus-scraper` role, profile and user imported) merged on `4-dev` on 2026-10-16 and released in `@kuzzleio/iot-platform-backend@4.0.0-4-dev.211`. `template-kuzzle-project` carries the same access (#10, #11); `template-kiotp-project` is on the platform v4 with the metrics (#39, branch `dev`, `4.0.0-4-dev.213`). Left: `template-hypervision-project`. `1.0.1-beta.1` (typing fix, #35) waits for a `1-dev` → `master` merge.
+- Step 04's last action: from 2026-10-19 (pnpm's 7 days), drop `kuzzle-prometheus` from the gateway's `minimumReleaseAgeExclude` in a follow-up PR, then close step 04.
+- **Next action:** bring the metrics to `template-hypervision-project` once a Hypervision release contains iot-platform#1100 (`4.0.0-4-dev.211` or later).
 
 ## Steps
 
@@ -72,9 +75,9 @@ State observed on 2026-10-06:
 | 03 | Extract the module into it (`.` + `./kuzzle`), move to `@prometheus-io/client`, typed API, common labels, configurable request buckets; `kuzzle-plugin-prometheus` 5.x re-exports it (since deprecated) | ✅ Done | #2, #3, #4, kuzzle-plugin-prometheus#56 | [detail](steps/03-module-extraction.md) |
 | 04 | Pilot: migrate the HTTP/TCP gateway to the module, metric names unchanged | 🟦 In progress | #5 | [detail](steps/04-gateway-pilot.md) |
 | 05 | PaaS: pod discovery in Alloy, first Kuzzle alert rules in Cockpit (carried out by the PaaS team, tracked on its side) | ⬜ To do | — | #10 |
-| 06 | IoT platform: `kuzzle-prometheus/kuzzle` loaded by default in `registerKIoTP`, opt-out, templates updated | ⬜ To do | — | #11 (templates: #12) |
+| 06 | IoT platform: `kuzzle-prometheus/kuzzle` loaded by default in `registerKIoTP`, opt-out, templates updated | 🟦 In progress | iot-platform#1092, iot-platform#1100, template-kuzzle-project#10, #11 | [detail](steps/06-iot-platform-default.md) · #11 (templates: #12) |
 
-Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so that the default only ships once the metrics are collected.
+Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so that the default only ships once the metrics are collected: its work starts before, its PR merges after.
 
 ## Decision register
 
@@ -104,17 +107,25 @@ Order: 01 → 02 → 03. Then 04 and 05 can run in parallel. 06 comes last, so t
 - 2026-10-09 — The real-application test of the Kuzzle plugin moves to the IoT platform (step 06 imports `kuzzle-prometheus/kuzzle`).
 - 2026-10-09 — The PaaS console's API tests the Kuzzle plugin first (supersedes the line above for the 1.0.0 gate): it already runs Kuzzle 2.59 on Node 24, the IoT platform does not yet.
 - 2026-10-09 — Step 05 is carried out by the PaaS team (Alloy scrape, metric filter, scraping role, alert rules); this ADR keeps the row and #10.
+- 2026-10-09 — Step 05, scraper access: a dedicated Kuzzle user whose role allows only `prometheus:metrics`, authenticated by an API key as a bearer token; anonymous access to `GET /_/metrics` stays closed (as recommended in `docs/kuzzle-stack.md`).
 - 2026-10-09 — Step 06: the IoT platform always creates the plugin and gives its modules and the customer's code stable access to `metrics`, even when `plugins.prometheus.enabled` is `false` (declarations then work, nothing is exposed).
 - 2026-10-09 — Step 06: no prefix on the IoT platform's instance; metrics carry full names, `kiotp_*` for the platform, the customer's own prefix for project code. No `scope()` API unless the convention falls short.
 - 2026-10-09 — A library never calls `createMetrics()`: it receives the host's `Metrics` (a service's `createMetrics()`, a Kuzzle application's `plugin.metrics`). To document when the first shared library needs it.
 - 2026-10-09 — Who sets `service` and `environment` (the module or the scraper's relabelling, which uses the same names) and the cost of `nodeId` (a new series set per restart) are settled at collection (step 05), not in the module.
 - 2026-10-12 — `core.nodeIdLabel` (default `true`): the plugin can leave `nodeId` out when the scrape target identifies the node, as the PaaS console asked; removing it by default would break the contract.
+- 2026-10-12 — Common labels on the PaaS console's scrape: the plugin sets `service` / `environment` / `project`, Alloy no longer relabels them (settles the 2026-10-09 question for the console; customer backends still open, #10) ([step 04](steps/04-gateway-pilot.md)).
+- 2026-10-14 — Step 06 starts before step 05 closes: the IoT platform's PR stays a draft until customer backends are collected ([step 06](steps/06-iot-platform-default.md)).
+- 2026-10-14 — Step 06: access to `metrics` by application (`getMetrics(app)`, `Module.metrics`); the backend's `kuzzle` peer dependency moves to `>=2.59.0` ([step 06](steps/06-iot-platform-default.md)).
+- 2026-10-14 — One prefix per producer, refining the 2026-10-09 line ("the customer's own prefix"): `kiotp_` (IoT platform), `hyp_` (Hypervision), `app_` fixed and shared by every project, `console_` if the PaaS console ever declares some; `kuzzle_`, `nodejs_`, `process_` reserved. Enforced by convention and one guard test per product; still no `scope()` ([step 06](steps/06-iot-platform-default.md)).
+- 2026-10-14 — The IoT platform declares the scraper's role and profile `prometheus-scraper` (only `prometheus:metrics`) when it loads the plugin; the PaaS creates the user and its API key. Not in the templates, not in the plugin ([step 06](steps/06-iot-platform-default.md)).
+- 2026-10-14 — Customer backends are collected through a `PodMonitor` and a `Secret` per backend namespace (one API key per backend), not a central scrape configuration; a dedicated unauthenticated port and `anonymous` scrapes rejected. Pilot on every project template, `template-kuzzle-project` first ([step 06](steps/06-iot-platform-default.md)).
+- 2026-10-15 — On customer backends, the deployment (the PaaS console) sets the three common labels through `kuzzle_plugins__prometheus__labels__*`, `service=kuzzle` for every Kuzzle backend, as on the console's own Kuzzle; the plugin takes no label in its constructor, so not in the templates. Settles the customer-backend part of the 2026-10-12 line ([step 06](steps/06-iot-platform-default.md)).
+- 2026-10-15 — The console has no admin access to the backends: the backend imports the `prometheus-scraper` user (local strategy, password `KUZZLE_PROMETHEUS_SCRAPER_PASSWORD` from a Secret the console never regenerates, imported only when set, never `overwrite`), the role adds `auth:createApiKey` / `auth:deleteApiKey`, and the console logs in as the scraper and replaces its key (fixed id `paas-metrics-scraper`). Revises the 2026-10-14 line "the PaaS creates the user"; a static token in the plugin rejected (bypasses the dedicated identity) ([step 06](steps/06-iot-platform-default.md)).
 
 ## Open points
 
 The release sequence is tracked in #8.
 
-- At 1.0.0, remove the `bootstrap` dist-tag of `kuzzle-prometheus` and check that `latest` is 1.0.0.
 - `kuzzle-plugin-prometheus` wound down on 2026-10-09 (`master` back on 4.2.1 with a deprecation README, `5-dev` and the v5 tags and releases deleted, open issues transferred here as #10–#13, repository archived). The docs.kuzzle.io tile points here (kuzzleio/documentation#604). Nothing left: the `NPM_TOKEN` it used before trusted publishing is an organisation secret other repositories still publish with, so it stays.
 
 ## References

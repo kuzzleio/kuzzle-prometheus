@@ -1,3 +1,9 @@
+## [1.0.1-beta.1](https://github.com/kuzzleio/kuzzle-prometheus/compare/v1.0.0...v1.0.1-beta.1) (2026-10-16)
+
+### Bug Fixes
+
+* a metric assigns to a field declared with its type ([4ea7d37](https://github.com/kuzzleio/kuzzle-prometheus/commit/4ea7d37d7350c7ef423fbb9b6170461380e86676))
+
 ## [1.0.0-beta.4](https://github.com/kuzzleio/kuzzle-prometheus/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2026-10-12)
 
 ### Features

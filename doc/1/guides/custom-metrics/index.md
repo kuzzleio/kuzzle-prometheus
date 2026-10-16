@@ -109,6 +109,8 @@ Recommended:
 
 The `prefix` given to `createMetrics` (or to the `PrometheusPlugin` constructor) is prepended to every name: `decode_errors_total` becomes `gateway_decode_errors_total`.
 
+When several producers share one instance, it has no prefix and each name carries its producer's prefix. The Kuzzle IoT Platform works this way: `kiotp_` for the platform, `app_` for project code. Follow the host's convention and declare the full name, prefix included (`app_parking_entries_total`).
+
 ## Keep labels bounded
 
 Every distinct combination of label values is a separate time series in Prometheus. A label whose values are unbounded (a device ID, a user ID, a URL with IDs in it, an error message) will eventually overload Prometheus.
