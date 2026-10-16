@@ -2,7 +2,7 @@
 
 **Status:** 🟦 In progress
 **Dates:** 2026-10-14 → …
-**PR(s):** [iot-platform#1092](https://github.com/kuzzleio/iot-platform/pull/1092) (Kuzzle 2.59, prerequisite), [iot-platform#1100](https://github.com/kuzzleio/iot-platform/pull/1100) (draft), [template-kuzzle-project#10](https://github.com/kuzzleio/template-kuzzle-project/pull/10) (pilot)
+**PR(s):** [iot-platform#1092](https://github.com/kuzzleio/iot-platform/pull/1092) (Kuzzle 2.59, prerequisite), [iot-platform#1100](https://github.com/kuzzleio/iot-platform/pull/1100), [template-kuzzle-project#10](https://github.com/kuzzleio/template-kuzzle-project/pull/10) (pilot)
 **ADR:** [ADR-0002](../ADR-0002-generic-prometheus-module.md) · issues #11, #12
 
 ## Goal
@@ -28,6 +28,8 @@
 - 2026-10-15 — kuzzle-prometheus#29 and template-kuzzle-project#10 merged. The template releases on the console's dispatch, not on merge: the pilot is a new KuzzleES8 app (chart `paas-kuzzle-es8` 1.6.0, `PodMonitor` off until the console writes the `Secret` `kuzzle-metrics-scraper`, Alloy reads only PodMonitors labelled `paas.kuzzle.io/metrics=kuzzle`).
 - 2026-10-15 — `service` label: the console sets `service=kuzzle` on every Kuzzle backend (its ADR-0007); `docs/kuzzle.md`, `docs/agents.md` and `doc/1/` say who sets which common label in a Kuzzle backend, and the precedence.
 - 2026-10-15 — The console cannot create the scraper's user (no admin access): the backend imports it (decision below). template-kuzzle-project#11 and iot-platform#1100 (b6bf61e) import the user when `KUZZLE_PROMETHEUS_SCRAPER_PASSWORD` is set, with `auth:createApiKey` / `auth:deleteApiKey` in the role; functional tests replay the console's flow. Checked on Kuzzle 2.59: a restart replays nothing (import hash unchanged); with another password the import logs `Users skipped`, the old password still logs in. One `Secret` per application (`<shortId>-metrics-scraper`): the console deploys a project's apps in one namespace. `docs/kuzzle-stack.md` and `doc/1/`: the no-admin-collector setup.
+- 2026-10-15 — Pilot `testtemplate` (template-kuzzle-project, console v3.38.0) collected by the PaaS; iot-platform#1100 out of draft.
+- 2026-10-16 — iot-platform#1100 merged on `4-dev` (404431c) and released in `4.0.0-4-dev.211` (`release-next.yml`, dispatched by hand: `4-dev` prereleases do not come from the push workflow).
 
 ## Local decisions / gotchas
 
@@ -60,8 +62,8 @@
 
 - [x] Unit tests and types of the backend pass locally (iot-platform#1100).
 - [x] iot-platform#1100 CI (functional scenario on a real Kuzzle), scraper role included.
-- [ ] Step 05 collects customer backends (done 2026-10-15); #1100 out of draft (done) and merged.
+- [x] Step 05 collects customer backends; #1100 out of draft and merged (2026-10-16, `4.0.0-4-dev.211`).
 - [x] Console-injected labels checked on a customer backend (pilot, 2026-10-15).
 - [x] `template-kuzzle-project` on Kuzzle 2.59 and the plugin (#12).
 - [x] Pilot: template-kuzzle-project#10 merged; a backend from it collected by the PaaS.
-- [ ] Templates: `template-kiotp-project` in its v4 migration, once a published backend contains #1100 (otherwise a follow-up PR): the `app_` convention, an example in a module, the `plugins.prometheus.enabled: false` opt-out (the scraper's role comes from the platform). `template-hypervision-project` follows once on a Hypervision version that contains #1100.
+- [ ] Templates: `template-kiotp-project` in its v4 migration, on `4.0.0-4-dev.211` or later: the `app_` convention, an example in a module, the `plugins.prometheus.enabled: false` opt-out (the scraper's role comes from the platform). `template-hypervision-project` follows once on a Hypervision version that contains #1100.
