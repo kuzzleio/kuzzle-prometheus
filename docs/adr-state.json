@@ -21,11 +21,11 @@
       "status": "active",
       "statusLabel": "🟦 Step 06 · IoT platform default",
       "openStep": "docs/adr-002/steps/06-iot-platform-default.md",
-      "nextAction": "Migrate template-kiotp-project to the IoT platform v4 (4.0.0-4-dev.211) with the metrics: app_ convention, an example metric in a module, the opt-out documented.",
+      "nextAction": "Bring the metrics to template-hypervision-project once a Hypervision release contains iot-platform#1100 (4.0.0-4-dev.211 or later).",
       "blockers": [],
       "openPoints": [
         "Step 04 still open: from 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude (follow-up PR), then close step 04.",
-        "Step 06: template-kiotp-project (v4 migration), then template-hypervision-project; the console does not yet set core.nodeIdLabel false on customer backends (PaaS fix).",
+        "Step 06: template-hypervision-project left; 1.0.1-beta.1 (#35) waits for a 1-dev → master merge; the console must inject crypto keys on v4 backends and set core.nodeIdLabel false (PaaS).",
         "Step 05 (PaaS, #10): customer backends collected (PodMonitor + Secret); project/environment relabelings on the PodMonitor so that up carries them (PaaS); alert rules not started.",
         "Naming: kiotp_ / hyp_ / app_ per producer; reopen scope(prefix) when hyp_ meets kiotp_, a shared library declares metrics, or review misses a prefix."
       ]
