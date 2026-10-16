@@ -3,7 +3,13 @@ import type { AddressInfo } from "node:net";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createMetrics, type MetricsOptions } from "../../src/index";
+import {
+  type Counter,
+  createMetrics,
+  type Gauge,
+  type Histogram,
+  type MetricsOptions,
+} from "../../src/index";
 
 function quiet(options: MetricsOptions = {}) {
   return createMetrics({
@@ -106,6 +112,35 @@ describe("counter", () => {
     withoutLabels.inc(2);
     // @ts-expect-error no labels on this metric
     expect(() => withoutLabels.inc({ protocol: "mqtt" })).toThrow();
+  });
+
+  it("assigns to a declared metric type", () => {
+    // Fields declared before the metrics, assigned in register(): the type
+    // argument must not be inferred from the assignment target.
+    class Module {
+      counter!: Counter<never>;
+      gauge!: Gauge<never>;
+      histogram!: Histogram<never>;
+      labelled!: Counter<"protocol">;
+
+      register(metrics: ReturnType<typeof createMetrics>): void {
+        this.counter = metrics.counter({ help: "h", name: "c_total" });
+        this.gauge = metrics.gauge({ help: "h", name: "g" });
+        this.histogram = metrics.histogram({ help: "h", name: "h_seconds" });
+        this.labelled = metrics.counter({
+          help: "h",
+          labelNames: ["protocol"],
+          name: "l_total",
+        });
+      }
+    }
+    const module = new Module();
+
+    module.register(quiet());
+    module.counter.inc();
+    module.gauge.set(1);
+    module.histogram.observe(1);
+    module.labelled.inc({ protocol: "mqtt" });
   });
 });
 
