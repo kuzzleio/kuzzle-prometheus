@@ -2,7 +2,7 @@
 
 **Status:** 🟦 In progress
 **Dates:** 2026-10-14 → …
-**PR(s):** [iot-platform#1092](https://github.com/kuzzleio/iot-platform/pull/1092) (Kuzzle 2.59, prerequisite), [iot-platform#1100](https://github.com/kuzzleio/iot-platform/pull/1100) (draft), [template-kuzzle-project#10](https://github.com/kuzzleio/template-kuzzle-project/pull/10) (pilot)
+**PR(s):** [iot-platform#1092](https://github.com/kuzzleio/iot-platform/pull/1092) (Kuzzle 2.59, prerequisite), [iot-platform#1100](https://github.com/kuzzleio/iot-platform/pull/1100), [template-kuzzle-project#10](https://github.com/kuzzleio/template-kuzzle-project/pull/10) (pilot), [iot-platform#1109](https://github.com/kuzzleio/iot-platform/pull/1109) (frontend fix), [template-kiotp-project#39](https://github.com/kuzzleio/template-kiotp-project/pull/39), #35
 **ADR:** [ADR-0002](../ADR-0002-generic-prometheus-module.md) · issues #11, #12
 
 ## Goal
@@ -28,6 +28,11 @@
 - 2026-10-15 — kuzzle-prometheus#29 and template-kuzzle-project#10 merged. The template releases on the console's dispatch, not on merge: the pilot is a new KuzzleES8 app (chart `paas-kuzzle-es8` 1.6.0, `PodMonitor` off until the console writes the `Secret` `kuzzle-metrics-scraper`, Alloy reads only PodMonitors labelled `paas.kuzzle.io/metrics=kuzzle`).
 - 2026-10-15 — `service` label: the console sets `service=kuzzle` on every Kuzzle backend (its ADR-0007); `docs/kuzzle.md`, `docs/agents.md` and `doc/1/` say who sets which common label in a Kuzzle backend, and the precedence.
 - 2026-10-15 — The console cannot create the scraper's user (no admin access): the backend imports it (decision below). template-kuzzle-project#11 and iot-platform#1100 (b6bf61e) import the user when `KUZZLE_PROMETHEUS_SCRAPER_PASSWORD` is set, with `auth:createApiKey` / `auth:deleteApiKey` in the role; functional tests replay the console's flow. Checked on Kuzzle 2.59: a restart replays nothing (import hash unchanged); with another password the import logs `Users skipped`, the old password still logs in. One `Secret` per application (`<shortId>-metrics-scraper`): the console deploys a project's apps in one namespace. `docs/kuzzle-stack.md` and `doc/1/`: the no-admin-collector setup.
+- 2026-10-15 — Pilot `testtemplate` (template-kuzzle-project, console v3.38.0) collected by the PaaS; iot-platform#1100 out of draft.
+- 2026-10-16 — iot-platform#1100 merged on `4-dev` (404431c) and released in `4.0.0-4-dev.211` (`release-next.yml`, dispatched by hand: `4-dev` prereleases do not come from the push workflow).
+- 2026-10-16 — `template-kiotp-project` on the platform v4 (#39, merged on a new `dev` branch: `stable` stays v3 until 4.0.0): `TenantClass` and device-manager 3 renames, `DevicesModule` declares `app_sample_device_payloads_total`, a functional test replays the console's scraper flow, README section (access, `app_`, opt-out). Web console minimal (Vue 3, Tailwind 4, Vite 8), Keycloak left to the console, as in `template-hypervision-project`.
+- 2026-10-16 — The frontend 211/212 did not load outside the monorepo (`require("leaflet")` in `dist/lib.js` since Vite 8): iot-platform#1109, released in `4.0.0-4-dev.213`, which the template uses.
+- 2026-10-16 — A label-less metric assigned to a field typed `Counter<never>` did not compile (label names inferred from the assignment target): `NoInfer` on the return types (#35, `1.0.1-beta.1`).
 
 ## Local decisions / gotchas
 
@@ -54,14 +59,16 @@
 - **Rejected:** a prefixed wrapper in the platform (it needs `Module` split between platform and project code, for the protection the guard already gives), an ESLint rule on `name:` literals (fragile), an instance prefix (project metrics would become `kiotp_*`), `scope(prefix)` or reserved prefixes in `kuzzle-prometheus`.
 - **Reopen `scope(prefix)`** when Hypervision declares its first `hyp_*` next to the `kiotp_*`, when a shared library (device-manager, workflows…) wants its own metrics on the host's instance, or when review lets an unprefixed name through. It would be a `feat` (minor) with its tests and docs (`docs/`, `doc/1/`, `docs/agents.md`), and a register line reversing the 2026-10-09 one.
 - **For step 05 (PaaS):** a keep-list per scrape job rather than a global one. Kuzzle backends: `kuzzle_.*|kiotp_.*|hyp_.*|nodejs_.*|process_.*`. Node services: their instance prefix (`gateway_.*`) plus `nodejs_.*|process_.*`. `app_.*` is enabled per project.
+- **Platform v4 at startup** (found with `template-kiotp-project`, not specific to the metrics): the backend crashes without a `plugins.keycloak` key (`registerKIoTP` reads `.enabled`), so the templates keep `"keycloak": { "enabled": false }` and the console's `kuzzle_plugins__keycloak__*` override it; and it refuses to start without `application.crypto.keys`: a public key in `compose.yml` for local development, a key per environment injected at runtime on the PaaS (`kuzzle_application__crypto__keys`), to be provided by the console.
 - **No platform metric in the first PR:** `kiotp_*` metrics come with their own modules, once the default is in place.
 
 ## Validation
 
 - [x] Unit tests and types of the backend pass locally (iot-platform#1100).
 - [x] iot-platform#1100 CI (functional scenario on a real Kuzzle), scraper role included.
-- [ ] Step 05 collects customer backends (done 2026-10-15); #1100 out of draft (done) and merged.
+- [x] Step 05 collects customer backends; #1100 out of draft and merged (2026-10-16, `4.0.0-4-dev.211`).
 - [x] Console-injected labels checked on a customer backend (pilot, 2026-10-15).
 - [x] `template-kuzzle-project` on Kuzzle 2.59 and the plugin (#12).
 - [x] Pilot: template-kuzzle-project#10 merged; a backend from it collected by the PaaS.
-- [ ] Templates: `template-kiotp-project` in its v4 migration, once a published backend contains #1100 (otherwise a follow-up PR): the `app_` convention, an example in a module, the `plugins.prometheus.enabled: false` opt-out (the scraper's role comes from the platform). `template-hypervision-project` follows once on a Hypervision version that contains #1100.
+- [x] `template-kiotp-project` on the platform v4 (#39, `4.0.0-4-dev.213`): the `app_` convention, an example in a module, the opt-out documented.
+- [ ] `template-hypervision-project`, once on a Hypervision version that contains #1100.
