@@ -1,7 +1,7 @@
 {
   "$comment": "CURRENT STATE of the ADR efforts, never their history: the hubs under docs/adr-<n>/ carry the narrative, this file is only their structured extract. It feeds the digest injected at every Claude Code session start (.claude/settings.json → `node .ci/scripts/adr-state.mts --digest`). Schema checked in CI (`--check`): status ∈ proposed | accepted | active | closed | abandoned; nextAction = ONE imperative action ≤ 300 chars, never what was just done; blockers ≤ 4 × 200 chars; openPoints ≤ 6 × 200 chars, no ✅ entry (what is done leaves this file); whole file ≤ 8 KB. Replace fields, never append a report to them. Public repository: nothing private here (client projects, private plugins). Detail: adr skill.",
   "snapshot": "2026-10-16",
-  "latestVersion": "1.0.0",
+  "latestVersion": "1.0.1",
   "adrs": [
     {
       "id": "0001",
@@ -25,7 +25,7 @@
       "blockers": [],
       "openPoints": [
         "Step 04 still open: from 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude (follow-up PR), then close step 04.",
-        "Step 06: template-hypervision-project left; 1.0.1-beta.1 (#35) waits for a 1-dev → master merge; the console must inject crypto keys on v4 backends and set core.nodeIdLabel false (PaaS).",
+        "Step 06: template-hypervision-project left; the console must inject crypto keys on v4 backends and set core.nodeIdLabel false (PaaS).",
         "Step 05 (PaaS, #10): customer backends collected (PodMonitor + Secret); project/environment relabelings on the PodMonitor so that up carries them (PaaS); alert rules not started.",
         "Naming: kiotp_ / hyp_ / app_ per producer; reopen scope(prefix) when hyp_ meets kiotp_, a shared library declares metrics, or review misses a prefix."
       ]
