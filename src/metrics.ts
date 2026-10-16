@@ -142,7 +142,7 @@ export class Metrics {
 
   counter<const L extends string = never>(
     configuration: MetricConfiguration<L>,
-  ): Counter<L> {
+  ): Counter<NoInfer<L>> {
     const { metric, guard, hasLabels } = this.declare(
       "counter",
       configuration,
@@ -161,7 +161,7 @@ export class Metrics {
 
   gauge<const L extends string = never>(
     configuration: GaugeConfiguration<L>,
-  ): Gauge<L> {
+  ): Gauge<NoInfer<L>> {
     const { collect } = configuration;
     const { metric, guard, hasLabels } = this.declare(
       "gauge",
@@ -195,7 +195,7 @@ export class Metrics {
 
   histogram<const L extends string = never>(
     configuration: HistogramConfiguration<L>,
-  ): Histogram<L> {
+  ): Histogram<NoInfer<L>> {
     const { metric, guard, hasLabels } = this.declare(
       "histogram",
       configuration,
