@@ -2,7 +2,7 @@
 
 **Status:** 🟦 In progress
 **Dates:** 2026-10-14 → …
-**PR(s):** [iot-platform#1092](https://github.com/kuzzleio/iot-platform/pull/1092) (Kuzzle 2.59, prerequisite), [iot-platform#1100](https://github.com/kuzzleio/iot-platform/pull/1100), [template-kuzzle-project#10](https://github.com/kuzzleio/template-kuzzle-project/pull/10) (pilot), [iot-platform#1109](https://github.com/kuzzleio/iot-platform/pull/1109) (frontend fix), [template-kiotp-project#39](https://github.com/kuzzleio/template-kiotp-project/pull/39), #35
+**PR(s):** [iot-platform#1092](https://github.com/kuzzleio/iot-platform/pull/1092) (Kuzzle 2.59, prerequisite), [iot-platform#1100](https://github.com/kuzzleio/iot-platform/pull/1100), [template-kuzzle-project#10](https://github.com/kuzzleio/template-kuzzle-project/pull/10) (pilot), [iot-platform#1109](https://github.com/kuzzleio/iot-platform/pull/1109) (frontend fix), [template-kiotp-project#39](https://github.com/kuzzleio/template-kiotp-project/pull/39), #35, PaaS console's Alloy PR #803
 **ADR:** [ADR-0002](../ADR-0002-generic-prometheus-module.md) · issues #11, #12
 
 ## Goal
@@ -33,6 +33,7 @@
 - 2026-10-16 — `template-kiotp-project` on the platform v4 (#39, merged on a new `dev` branch: `stable` stays v3 until 4.0.0): `TenantClass` and device-manager 3 renames, `DevicesModule` declares `app_sample_device_payloads_total`, a functional test replays the console's scraper flow, README section (access, `app_`, opt-out). Web console minimal (Vue 3, Tailwind 4, Vite 8), Keycloak left to the console, as in `template-hypervision-project`.
 - 2026-10-16 — The frontend 211/212 did not load outside the monorepo (`require("leaflet")` in `dist/lib.js` since Vite 8): iot-platform#1109, released in `4.0.0-4-dev.213`, which the template uses.
 - 2026-10-16 — A label-less metric assigned to a field typed `Counter<never>` did not compile (label names inferred from the assignment target): `NoInfer` on the return types (#35, `1.0.1-beta.1`).
+- 2026-10-19 — Pilot from `template-kiotp-project`: a project created by the console (`v1.0.0-dev.1` from `dev`, environment `main`) collected in production, `app_sample_device_payloads_total` included. Alloy's keep-list (the PaaS's D4 filter) now keeps `kiotp_*` and `hyp_*` on every backend and `app_*` per namespace, this pilot only (PaaS console's ADR-0007, step 04). The 4.0.0-4-dev.213 platform declares no `kiotp_*` metric yet.
 
 ## Local decisions / gotchas
 
@@ -60,6 +61,7 @@
 - **Reopen `scope(prefix)`** when Hypervision declares its first `hyp_*` next to the `kiotp_*`, when a shared library (device-manager, workflows…) wants its own metrics on the host's instance, or when review lets an unprefixed name through. It would be a `feat` (minor) with its tests and docs (`docs/`, `doc/1/`, `docs/agents.md`), and a register line reversing the 2026-10-09 one.
 - **For step 05 (PaaS):** a keep-list per scrape job rather than a global one. Kuzzle backends: `kuzzle_.*|kiotp_.*|hyp_.*|nodejs_.*|process_.*`. Node services: their instance prefix (`gateway_.*`) plus `nodejs_.*|process_.*`. `app_.*` is enabled per project.
 - **Platform v4 at startup** (found with `template-kiotp-project`, not specific to the metrics): the backend crashes without a `plugins.keycloak` key (`registerKIoTP` reads `.enabled`), so the templates keep `"keycloak": { "enabled": false }` and the console's `kuzzle_plugins__keycloak__*` override it; and it refuses to start without `application.crypto.keys`: a public key in `compose.yml` for local development, a key per environment injected at runtime on the PaaS (`kuzzle_application__crypto__keys`), to be provided by the console.
+- **A v4 project from the console** (pilot, 2026-10-19): the console creates the repository from the template's default branch only (`stable`, still v3), so the `dev` branch is pushed into the project by hand until 4.0.0 makes `stable` v4. The GitHub credentials (`PAAS_ROBOT_APIKEY`, registry robot) are a manual step in the console ("Configurer l'environnement GitHub", "Générer les identifiants"); without them CI fails with `E401` on the private registry. The console environment's name must match a folder under `apps/api/lib/environments/` (here `main`, added to the project).
 - **No platform metric in the first PR:** `kiotp_*` metrics come with their own modules, once the default is in place.
 
 ## Validation
@@ -71,4 +73,5 @@
 - [x] `template-kuzzle-project` on Kuzzle 2.59 and the plugin (#12).
 - [x] Pilot: template-kuzzle-project#10 merged; a backend from it collected by the PaaS.
 - [x] `template-kiotp-project` on the platform v4 (#39, `4.0.0-4-dev.213`): the `app_` convention, an example in a module, the opt-out documented.
+- [x] A backend from `template-kiotp-project` collected by the PaaS, `app_*` included (2026-10-19).
 - [ ] `template-hypervision-project`, once on a Hypervision version that contains #1100.
