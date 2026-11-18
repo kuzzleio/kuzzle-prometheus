@@ -1,6 +1,6 @@
 {
   "$comment": "CURRENT STATE of the ADR efforts, never their history: the hubs under docs/adr-<n>/ carry the narrative, this file is only their structured extract. It feeds the digest injected at every Claude Code session start (.claude/settings.json → `node .ci/scripts/adr-state.mts --digest`). Schema checked in CI (`--check`): status ∈ proposed | accepted | active | closed | abandoned; nextAction = ONE imperative action ≤ 300 chars, never what was just done; blockers ≤ 4 × 200 chars; openPoints ≤ 6 × 200 chars, no ✅ entry (what is done leaves this file); whole file ≤ 8 KB. Replace fields, never append a report to them. Public repository: nothing private here (client projects, private plugins). Detail: adr skill.",
-  "snapshot": "2026-10-19",
+  "snapshot": "2026-11-18",
   "latestVersion": "1.0.1",
   "adrs": [
     {
@@ -18,15 +18,13 @@
       "id": "0002",
       "hub": "docs/adr-002/ADR-0002-generic-prometheus-module.md",
       "title": "Generic Prometheus module, and the Kuzzle plugin built on it",
-      "status": "active",
-      "statusLabel": "🟦 Step 06 · IoT platform default",
-      "openStep": "docs/adr-002/steps/06-iot-platform-default.md",
-      "nextAction": "Bring the metrics to template-hypervision-project once a Hypervision release contains iot-platform#1100 (4.0.0-4-dev.211 or later).",
+      "status": "accepted",
+      "statusLabel": "🟡 Accepted · steps 01–04, 06 done",
+      "openStep": null,
+      "nextAction": "Follow step 05 (#10) on the PaaS side; close ADR-0002 once its first Kuzzle alert rules run.",
       "blockers": [],
       "openPoints": [
-        "Step 04 still open: from 2026-10-19, drop kuzzle-prometheus from the gateway's minimumReleaseAgeExclude (follow-up PR), then close step 04.",
-        "Step 06: template-hypervision-project left (a Hypervision release on iot-platform-backend 4.0.0-4-dev.211 or later); the console must set core.nodeIdLabel false (PaaS).",
-        "Step 05 (PaaS, #10): customer backends collected (PodMonitor + Secret); project/environment relabelings on the PodMonitor so that up carries them (PaaS); alert rules not started.",
+        "Step 05 (PaaS team, #10): project/environment relabelings on the PodMonitor, core.nodeIdLabel false on customer backends, app_* kept per project, first alert rules.",
         "Naming: kiotp_ / hyp_ / app_ per producer; reopen scope(prefix) when hyp_ meets kiotp_, a shared library declares metrics, or review misses a prefix."
       ]
     }

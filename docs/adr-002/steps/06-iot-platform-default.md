@@ -1,8 +1,8 @@
 # Step 06 — IoT platform: the Kuzzle plugin loaded by default
 
-**Status:** 🟦 In progress
-**Dates:** 2026-10-14 → …
-**PR(s):** [iot-platform#1092](https://github.com/kuzzleio/iot-platform/pull/1092) (Kuzzle 2.59, prerequisite), [iot-platform#1100](https://github.com/kuzzleio/iot-platform/pull/1100), [template-kuzzle-project#10](https://github.com/kuzzleio/template-kuzzle-project/pull/10) (pilot), [iot-platform#1109](https://github.com/kuzzleio/iot-platform/pull/1109) (frontend fix), [template-kiotp-project#39](https://github.com/kuzzleio/template-kiotp-project/pull/39), #35, PaaS console's Alloy PR #803
+**Status:** ✅ Done
+**Dates:** 2026-10-14 → 2026-11-18
+**PR(s):** [iot-platform#1092](https://github.com/kuzzleio/iot-platform/pull/1092) (Kuzzle 2.59, prerequisite), [iot-platform#1100](https://github.com/kuzzleio/iot-platform/pull/1100), [template-kuzzle-project#10](https://github.com/kuzzleio/template-kuzzle-project/pull/10) (pilot), [iot-platform#1109](https://github.com/kuzzleio/iot-platform/pull/1109) (frontend fix), [template-kiotp-project#39](https://github.com/kuzzleio/template-kiotp-project/pull/39), #35, PaaS console's Alloy PR #803, [template-hypervision-project#17](https://github.com/kuzzleio/template-hypervision-project/pull/17), [hypervision#143](https://github.com/kuzzleio/hypervision/pull/143) and [iot-platform#1164](https://github.com/kuzzleio/iot-platform/pull/1164) (dependency declarations)
 **ADR:** [ADR-0002](../ADR-0002-generic-prometheus-module.md) · issues #11, #12
 
 ## Goal
@@ -34,6 +34,9 @@
 - 2026-10-16 — The frontend 211/212 did not load outside the monorepo (`require("leaflet")` in `dist/lib.js` since Vite 8): iot-platform#1109, released in `4.0.0-4-dev.213`, which the template uses.
 - 2026-10-16 — A label-less metric assigned to a field typed `Counter<never>` did not compile (label names inferred from the assignment target): `NoInfer` on the return types (#35, `1.0.1-beta.1`).
 - 2026-10-19 — Pilot from `template-kiotp-project`: a project created by the console (`v1.0.0-dev.1` from `dev`, environment `main`) collected in production, `app_sample_device_payloads_total` included. Alloy's keep-list (the PaaS's D4 filter) now keeps `kiotp_*` and `hyp_*` on every backend and `app_*` per namespace, this pilot only (PaaS console's ADR-0007, step 04). The 4.0.0-4-dev.213 platform declares no `kiotp_*` metric yet.
+- 2026-11-18 — `template-hypervision-project` on Hypervision `2.0.0-2-dev.107` (platform `4.0.0-4-dev.225`, Kuzzle 2.59.0, `kuzzle-prometheus` 1.0.1), API and web together (#17, merged on `stable`): `compose.yml` sets the scraper's password and a public local encryption key, a functional test replays the console's scraper flow (scrape with the key, nothing else allowed, anonymous refused), README section (access, `app_`, reserved prefixes including `hyp_`, opt-out). No example metric: the template has no module of its own yet. CI green, 5/5 functional tests.
+- 2026-11-18 — Found on the way: the Hypervision backend imported `@kuzzleio/plugin-workflows`, `kuzzle-device-manager`, `kuzzle-plugin-commons` and `kuzzle` without declaring them, relying on the platform's hoisted copies; with the web on another version, the API image crashed on `ERR_MODULE_NOT_FOUND` (hypervision#143 declares them). The platform backend had lost its `kuzzle` peer dependency (`>=2.59.0 <3.0.0`) in iot-platform#1111, since `4.0.0-4-dev.214` (iot-platform#1164 restores it).
+- 2026-11-18 — Step closed: every template carries the default. What is left is on the PaaS side (step 05, #10): `core.nodeIdLabel: false` on customer backends, `app_*` kept per namespace for each project collected.
 
 ## Local decisions / gotchas
 
@@ -74,4 +77,4 @@
 - [x] Pilot: template-kuzzle-project#10 merged; a backend from it collected by the PaaS.
 - [x] `template-kiotp-project` on the platform v4 (#39, `4.0.0-4-dev.213`): the `app_` convention, an example in a module, the opt-out documented.
 - [x] A backend from `template-kiotp-project` collected by the PaaS, `app_*` included (2026-10-19).
-- [ ] `template-hypervision-project`, once on a Hypervision version that contains #1100.
+- [x] `template-hypervision-project` on a Hypervision version that contains #1100 (#17, `2.0.0-2-dev.107`), functional scraper scenario green in CI.
